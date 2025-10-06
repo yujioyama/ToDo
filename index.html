@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <script type="module" src="/src/js/main.js"></script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>Todo App</h1>
+
+      <div>
+        <div class="action">
+          <div class="input-text">
+            <input type="text" class="input-text__input js-new-task-input" />
+          </div>
+          <button class="action__add js-add-new-task-trigger">Add</button>
+        </div>
+
+        <ul class="todo-list js-todo-list"></ul>
+
+        <template id="list-item-template">
+          <li class="todo-list__item js-todo-list-item" data-id>
+            <div class="todo-list__left">
+              <button
+                class="todo-list__status js-task-status-trigger"
+                aria-label="Mark as complete"
+              ></button>
+              <span class="todo-list__text js-task-text"></span>
+            </div>
+
+            <button class="todo-list__delete js-delete-task-trigger">
+              delete
+            </button>
+          </li>
+        </template>
+      </div>
+    </div>
+  </body>
+</html>

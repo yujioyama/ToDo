@@ -1,0 +1,48 @@
+.todo-list {
+  margin-top: 20px;
+
+  &__left {
+    display: flex;
+    align-items: center;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid gray;
+
+    &.is-complete::before {
+      content: "";
+      display: block;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background-color: red;
+    }
+  }
+
+  &__item {
+    display: flex;
+
+    &:not(:first-child) {
+      margin-top: 10px;
+    }
+  }
+
+  &__text {
+    margin-left: 10px;
+  }
+
+  &__delete {
+    margin-left: 10px;
+
+    &:hover {
+      transition-duration: 0.3s;
+      color: blue;
+    }
+  }
+}
