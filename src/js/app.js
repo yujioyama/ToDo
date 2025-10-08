@@ -1,47 +1,45 @@
-const LIST_ITEMS_LOCAL_STORAGE = "listItems";
+// app.js
+// Connects UI (DOM) with the task model and storage.
+// Handles user events, updates the DOM, and delegates data logic to model/store.
 
-const insertTask = (taskTemplate, task, taskListElm, newTaskInputElm) => {
+import { loadTasks, saveTasks } from "./store.js";
+import { addTask, deleteTask, toggleTaskStatus, findTask } from "./model.js";
+
+const applyStatus = (changeStatusButtonElm, isDone) => {
+  changeStatusButtonElm.classList.toggle("is-complete", isDone);
+  changeStatusButtonElm.setAttribute(
+    "aria-label",
+    isDone ? "Mark as incomplete" : "Mark as complete"
+  );
+  changeStatusButtonElm.setAttribute("aria-pressed", String(isDone));
+};
+
+const insertTask = (taskTemplate, task, taskListElm) => {
   const node = taskTemplate.content.cloneNode(true);
-  node.querySelector(".js-task-text").textContent = task.text;
-  node.querySelector(".js-todo-list-item").dataset.id = task.id;
-
+  const listItemElm = node.querySelector(".js-todo-list-item");
+  const taskTextElm = node.querySelector(".js-task-text");
   const taskStatusTrigger = node.querySelector(".js-task-status-trigger");
 
-  if (task.done === true) {
-    taskStatusTrigger.classList.add("is-complete");
-    taskStatusTrigger.setAttribute("aria-label", "Mark as complete");
-  } else {
-    taskStatusTrigger.classList.remove("is-complete");
-    taskStatusTrigger.setAttribute("aria-label", "Mark as incomplete");
-  }
+  listItemElm.dataset.id = task.id;
+  taskTextElm.textContent = task.text;
+  applyStatus(taskStatusTrigger, task.done);
 
   taskListElm.appendChild(node);
+};
+
+const onAddNewTask = (newTaskInputElm, taskTemplate, taskListElm) => {
+  const newTaskText = newTaskInputElm.value.trim();
+  if (!newTaskText) return;
+
+  const tasks = loadTasks();
+  const updatedTasks = addTask(tasks, newTaskText);
+  saveTasks(updatedTasks);
+
+  const newTask = updatedTasks[updatedTasks.length - 1];
+  insertTask(taskTemplate, newTask, taskListElm);
 
   newTaskInputElm.value = "";
-};
-
-const getSaveTasks = () => {
-  const savedTasks = localStorage.getItem(LIST_ITEMS_LOCAL_STORAGE);
-  return savedTasks ? JSON.parse(savedTasks) : [];
-};
-
-const addNewTask = (newTaskInputElm, taskTemplate, taskListElm) => {
-  const tasks = getSaveTasks();
-
-  const newTaskText = newTaskInputElm.value;
-
-  const newTask = {
-    id: crypto.randomUUID(),
-    text: newTaskText,
-    done: false,
-    createAt: Date.now(),
-  };
-
-  tasks.push(newTask);
-
-  localStorage.setItem(LIST_ITEMS_LOCAL_STORAGE, JSON.stringify(tasks));
-
-  insertTask(taskTemplate, newTask, taskListElm, newTaskInputElm);
+  newTaskInputElm.focus();
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -55,64 +53,57 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!addNewTaskButtonElm || !newTaskInputElm || !taskListElm || !taskTemplate)
     return;
 
-  const tasks = getSaveTasks();
-
-  if (tasks.length > 0) {
-    tasks.forEach((task, index) => {
-      insertTask(taskTemplate, task, taskListElm, newTaskInputElm);
-    });
-  }
+  const tasks = loadTasks();
+  for (const task of tasks) insertTask(taskTemplate, task, taskListElm);
 
   addNewTaskButtonElm.addEventListener("click", () => {
     if (newTaskInputElm.value.trim() === "") {
       alert("Please enter a task.");
-    } else {
-      addNewTask(newTaskInputElm, taskTemplate, taskListElm);
+      return;
+    }
+    onAddNewTask(newTaskInputElm, taskTemplate, taskListElm);
+  });
+
+  newTaskInputElm.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      if (newTaskInputElm.value.trim() === "") {
+        alert("Please enter a task.");
+        return;
+      }
+      onAddNewTask(newTaskInputElm, taskTemplate, taskListElm);
     }
   });
 
   taskListElm.addEventListener("click", (e) => {
-    const clickedButton = e.target;
+    const deleteButton = e.target.closest?.(".js-delete-task-trigger");
 
-    if (clickedButton && clickedButton.matches(".js-delete-task-trigger")) {
-      const listItemElm = clickedButton.closest(".js-todo-list-item");
-      const taskTextElm = listItemElm.querySelector(".js-task-text");
+    if (deleteButton) {
+      const listItemElm = deleteButton.closest(".js-todo-list-item");
+      if (!listItemElm) return;
 
-      const taskToDelete = taskTextElm.textContent;
-      const tasks = getSaveTasks();
+      const tasks = loadTasks();
+      const tasksAfterDeletion = deleteTask(tasks, istItemElm.dataset.id);
 
-      const tasksAfterDeletion = tasks.filter(
-        (task) => task.textContent !== taskToDelete
-      );
-
-      localStorage.setItem(
-        LIST_ITEMS_LOCAL_STORAGE,
-        JSON.stringify(tasksAfterDeletion)
-      );
+      saveTasks(tasksAfterDeletion);
 
       listItemElm.remove();
     }
 
-    if (clickedButton && clickedButton.matches(".js-task-status-trigger")) {
-      const listItemElm = clickedButton.closest(".js-todo-list-item");
+    const changeStatusButton = e.target.closest?.(".js-task-status-trigger");
+    if (changeStatusButton) {
+      const listItemElm = changeStatusButton.closest(".js-todo-list-item");
+      if (!listItemElm) return;
 
-      let tasks = getSaveTasks();
+      let tasks = loadTasks();
+      const selectedTaskId = listItemElm.dataset.id;
 
-      tasks.forEach((task, index) => {
-        if (task.id === listItemElm.dataset.id) {
-          tasks[index].done = !tasks[index].done;
+      const updatedTasks = toggleTaskStatus(tasks, selectedTaskId);
 
-          if (tasks[index].done === true) {
-            clickedButton.classList.add("is-complete");
-            clickedButton.setAttribute("aria-label", "Mark as complete");
-          } else {
-            clickedButton.classList.remove("is-complete");
-            clickedButton.setAttribute("aria-label", "Mark as incomplete");
-          }
-        }
-      });
+      saveTasks(updatedTasks);
 
-      localStorage.setItem(LIST_ITEMS_LOCAL_STORAGE, JSON.stringify(tasks));
+      const selectedTask = findTask(tasks, selectedTaskId);
+
+      applyStatus(changeStatusButton, selectedTask.done);
     }
   });
 });
