@@ -12,10 +12,24 @@ ul {
   padding: 0;
 }
 
+ul,
+li {
+  list-style: none;
+}
+
 .wrapper {
   padding: 30px;
 }
 
 button {
   cursor: pointer;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit; /* Unify font styles across browsers */
+  color: inherit; /* Prevent Safari from overriding text color */
+  box-sizing: border-box; /* Consistent sizing model */
 }

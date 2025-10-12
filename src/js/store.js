@@ -4,6 +4,11 @@
 
 const LIST_ITEMS_LOCAL_STORAGE = "listItems";
 
+/**
+ * Read tasks from localStorage.
+ *
+ * @returns {import("./model.js").Task[]} Parsed list of tasks, or an empty array when nothing is stored.
+ */
 export const loadTasks = () => {
   try {
     const savedTasks = localStorage.getItem(LIST_ITEMS_LOCAL_STORAGE);
@@ -14,6 +19,12 @@ export const loadTasks = () => {
   }
 };
 
+/**
+ * Persist tasks into localStorage.
+ *
+ * @param {import("./model.js").Task[]} tasks List of tasks to store.
+ * @returns {void}
+ */
 export const saveTasks = (tasks) => {
   localStorage.setItem(LIST_ITEMS_LOCAL_STORAGE, JSON.stringify(tasks));
 };

@@ -45,4 +45,24 @@
       color: blue;
     }
   }
+
+  &__editWrap {
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &__edit {
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    line-height: inherit;
+    background: transparent;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
 }

@@ -7,15 +7,59 @@
     <script type="module" src="/src/js/main.js"></script>
   </head>
   <body>
-    <div class="wrapper">
+    <main class="wrapper">
       <h1>Todo App</h1>
 
       <div>
-        <div class="action">
+        <div class="action-add">
           <div class="input-text">
             <input type="text" class="input-text__input js-new-task-input" />
           </div>
-          <button class="action__add js-add-new-task-trigger">Add</button>
+          <button class="action-add__button js-add-new-task-trigger">
+            Add
+          </button>
+        </div>
+
+        <div class="action">
+          <div class="action__row">
+            <div class="action__title">Filter:</div>
+            <ul class="action-buttons">
+              <li class="action-buttons__list">
+                <label class="action-buttons__label">
+                  <input
+                    type="radio"
+                    name="filter"
+                    value="All"
+                    class="action-buttons__input"
+                    checked
+                  />
+                  <span class="action-buttons__text">All</span>
+                </label>
+              </li>
+              <li class="action-buttons__list">
+                <label class="action-buttons__label">
+                  <input
+                    type="radio"
+                    name="filter"
+                    value="Active"
+                    class="action-buttons__input"
+                  />
+                  <span class="action-buttons__text">Active</span>
+                </label>
+              </li>
+              <li class="action-buttons__list">
+                <label class="action-buttons__label">
+                  <input
+                    type="radio"
+                    name="filter"
+                    value="Done"
+                    class="action-buttons__input"
+                  />
+                  <span class="action-buttons__text">Done</span>
+                </label>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <ul class="todo-list js-todo-list"></ul>
@@ -36,6 +80,6 @@
           </li>
         </template>
       </div>
-    </div>
+    </main>
   </body>
 </html>
