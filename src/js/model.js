@@ -55,17 +55,6 @@ export const toggleTaskStatus = (tasks, id) => {
 };
 
 /**
- * Retrieve a task by its identifier.
- *
- * @param {Task[]} tasks Current list of tasks.
- * @param {string} id Identifier of the task to find.
- * @returns {Task | undefined} Matching task or undefined if not found.
- */
-export const findTask = (tasks, id) => {
-  return tasks.find((task) => task.id === id);
-};
-
-/**
  * Merge the provided fields into the matching task.
  *
  * @param {Task[]} tasks Current list of tasks.
