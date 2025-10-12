@@ -2,7 +2,7 @@
 // Connects UI (DOM) with the task model and storage.
 // Handles user events, updates the DOM, and delegates data logic to model/store.
 
-import { loadTasks, saveTasks } from "./store.js";
+import { loadTasks, saveTasks, loadFilter, saveFilter } from "./store.js";
 import { addTask, deleteTask, toggleTaskStatus, updateTask } from "./model.js";
 
 const applyStatus = (changeStatusButtonElm, isDone) => {
@@ -37,6 +37,7 @@ const replaceWithTaskText = (wrapperElm, text) => {
 };
 
 const getFilteredTasks = (tasks, filter) => {
+  saveFilter(filter);
   switch (filter) {
     case "active":
       return tasks.filter((task) => !task.done);
@@ -72,15 +73,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
 
   let tasks = loadTasks();
-  const initialFilterInputElm = filterListElm.querySelector(
+  const initialFilterInput = filterListElm.querySelector(
     'input[name="filter"]:checked'
   );
-  let currentFilter = initialFilterInputElm?.value ?? "all";
+  const availableFilterInputs = Array.from(
+    filterListElm.querySelectorAll(".js-filter-trigger")
+  );
+  const savedFilter = loadFilter();
+  const availableValues = new Set(
+    availableFilterInputs.map((input) => input.value)
+  );
+  let currentFilter = availableValues.has(savedFilter)
+    ? savedFilter
+    : initialFilterInput?.value ?? "all";
+
+  const syncFilterControls = () => {
+    const targetInput = filterListElm.querySelector(
+      `.js-filter-trigger[value="${currentFilter}"]`
+    );
+    if (targetInput) targetInput.checked = true;
+  };
 
   const render = () => {
     renderTaskList(taskTemplate, taskListElm, tasks, currentFilter);
   };
 
+  syncFilterControls();
   render();
 
   const clearAndFocusInput = () => {
@@ -210,6 +228,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!filterInputElm) return;
 
     currentFilter = filterInputElm.value;
+    saveFilter(currentFilter);
+    syncFilterControls();
     render();
   });
 });

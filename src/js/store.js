@@ -3,6 +3,7 @@
 // This module abstracts browser storage so other files don’t deal with it directly.
 
 const LIST_ITEMS_LOCAL_STORAGE = "listItems";
+const FILTER_LOCAL_STORAGE = "listFilter";
 
 /**
  * Read tasks from localStorage.
@@ -27,4 +28,29 @@ export const loadTasks = () => {
  */
 export const saveTasks = (tasks) => {
   localStorage.setItem(LIST_ITEMS_LOCAL_STORAGE, JSON.stringify(tasks));
+};
+
+/**
+ * Read the saved filter value from localStorage.
+ *
+ * @returns {"all" | "active" | "done" | null} Stored filter identifier or null when absent.
+ */
+export const loadFilter = () => {
+  try {
+    const savedFilter = localStorage.getItem(FILTER_LOCAL_STORAGE);
+    return savedFilter ? savedFilter : null;
+  } catch (e) {
+    console.error("Failed to load filter from localStorage", e);
+    return null;
+  }
+};
+
+/**
+ * Persist filter into localStorage.
+ *
+ * @param {"all" | "active" | "done"} filter
+ * @returns {void}
+ */
+export const saveFilter = (filter) => {
+  localStorage.setItem(FILTER_LOCAL_STORAGE, filter);
 };
