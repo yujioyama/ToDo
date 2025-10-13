@@ -19,10 +19,12 @@ const insertTask = (taskTemplate, task, taskListElm) => {
   const listItemElm = node.querySelector(".js-todo-list-item");
   const taskTextElm = node.querySelector(".js-task-text");
   const taskStatusTrigger = node.querySelector(".js-task-status-trigger");
+  const taskDueElm = node.querySelector(".js-task-due");
 
   listItemElm.dataset.id = task.id;
   taskTextElm.textContent = task.text;
   applyStatus(taskStatusTrigger, task.done);
+  if (taskDueElm) applyDueDate(taskDueElm, task.dueDate);
 
   taskListElm.appendChild(node);
 };
@@ -48,9 +50,45 @@ const getFilteredTasks = (tasks, filter) => {
   }
 };
 
-const renderTaskList = (taskTemplate, taskListElm, tasks, filter) => {
+const matchesSearch = (task, searchTerm) => {
+  if (!searchTerm) return true;
+  return (task.text ?? "").toLowerCase().includes(searchTerm.toLowerCase());
+};
+
+const formatDueDate = (dueDate) => {
+  if (!dueDate) return null;
+  const parsedDate = new Date(dueDate);
+  if (Number.isNaN(parsedDate.getTime())) return null;
+
+  return {
+    display: parsedDate.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }),
+    datetime: dueDate,
+  };
+};
+
+const applyDueDate = (dueElm, dueDate) => {
+  const formatted = formatDueDate(dueDate);
+  if (!formatted) {
+    dueElm.textContent = "";
+    dueElm.removeAttribute("datetime");
+    dueElm.hidden = true;
+    return;
+  }
+
+  dueElm.textContent = `Due ${formatted.display}`;
+  dueElm.setAttribute("datetime", formatted.datetime);
+  dueElm.hidden = false;
+};
+
+const renderTaskList = (taskTemplate, taskListElm, tasks, filter, searchTerm) => {
   taskListElm.innerHTML = "";
-  const visibleTasks = getFilteredTasks(tasks, filter);
+  const visibleTasks = getFilteredTasks(tasks, filter).filter((task) =>
+    matchesSearch(task, searchTerm)
+  );
   for (const task of visibleTasks) insertTask(taskTemplate, task, taskListElm);
 };
 
@@ -59,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ".js-add-new-task-trigger"
   );
   const newTaskInputElm = document.querySelector(".js-new-task-input");
+  const newTaskDateElm = document.querySelector(".js-new-task-date");
   const taskTemplate = document.getElementById("list-item-template");
   const taskListElm = document.querySelector(".js-todo-list");
   const filterListElm = document.querySelector(".js-filter");
@@ -66,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (
     !addNewTaskButtonElm ||
     !newTaskInputElm ||
+    !newTaskDateElm ||
     !taskListElm ||
     !taskTemplate ||
     !filterListElm
@@ -94,8 +134,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (targetInput) targetInput.checked = true;
   };
 
+  let currentSearchTerm = "";
+
   const render = () => {
-    renderTaskList(taskTemplate, taskListElm, tasks, currentFilter);
+    renderTaskList(
+      taskTemplate,
+      taskListElm,
+      tasks,
+      currentFilter,
+      currentSearchTerm
+    );
   };
 
   syncFilterControls();
@@ -103,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const clearAndFocusInput = () => {
     newTaskInputElm.value = "";
+    newTaskDateElm.value = "";
     newTaskInputElm.focus();
   };
 
@@ -110,7 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const newTaskText = newTaskInputElm.value.trim();
     if (!newTaskText) return;
 
-    tasks = addTask(tasks, newTaskText);
+    const newTaskDueDate = newTaskDateElm.value || null;
+
+    tasks = addTask(tasks, newTaskText, newTaskDueDate);
     saveTasks(tasks);
     clearAndFocusInput();
     render();
@@ -230,6 +281,14 @@ document.addEventListener("DOMContentLoaded", () => {
     currentFilter = filterInputElm.value;
     saveFilter(currentFilter);
     syncFilterControls();
+    render();
+  });
+
+  const searchInputElm = document.querySelector(".js-search");
+  if (!searchInputElm) return;
+
+  searchInputElm.addEventListener("input", () => {
+    currentSearchTerm = searchInputElm.value.trim();
     render();
   });
 });

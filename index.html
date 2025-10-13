@@ -15,12 +15,23 @@
           <div class="input-text">
             <input type="text" class="input-text__input js-new-task-input" />
           </div>
+          <div class="input-date">
+            <input type="date" class="input-date__input js-new-task-date" />
+          </div>
           <button class="action-add__button js-add-new-task-trigger">
             Add
           </button>
         </div>
 
         <div class="action">
+          <div class="action__row">
+            <div class="action__title">Search🔍 :</div>
+            <div class="action__search">
+              <div class="input-text">
+                <input type="text" class="input-text__input js-search" />
+              </div>
+            </div>
+          </div>
           <div class="action__row">
             <div class="action__title">Filter:</div>
             <ul class="action-buttons js-filter">
@@ -72,6 +83,7 @@
                 aria-label="Mark as complete"
               ></button>
               <span class="todo-list__text js-task-text"></span>
+              <time class="todo-list__due js-task-due" hidden></time>
             </div>
 
             <button class="todo-list__delete js-delete-task-trigger">

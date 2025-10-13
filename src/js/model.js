@@ -8,6 +8,7 @@
  * @property {string} text Task description.
  * @property {boolean} done Completion state.
  * @property {number} createdAt C timestamp when the task was created.
+ * @property {string | null} [dueDate] ISO-8601 date string representing the due date.
  * @property {number} [updatedAt] Epoch timestamp of the last update.
  */
 
@@ -16,9 +17,10 @@
  *
  * @param {Task[]} tasks Current list of tasks.
  * @param {string} text Raw text for the new task.
+ * @param {string | null | undefined} [dueDate] Optional ISO date string (YYYY-MM-DD).
  * @returns {Task[]} New list with the appended task.
  */
-export const addTask = (tasks, text) => {
+export const addTask = (tasks, text, dueDate) => {
   return [
     ...tasks,
     {
@@ -26,6 +28,7 @@ export const addTask = (tasks, text) => {
       text: text.trim(),
       done: false,
       createdAt: Date.now(),
+      dueDate: dueDate ?? null,
     },
   ];
 };
