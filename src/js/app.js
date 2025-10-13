@@ -20,11 +20,13 @@ const insertTask = (taskTemplate, task, taskListElm) => {
   const taskTextElm = node.querySelector(".js-task-text");
   const taskStatusTrigger = node.querySelector(".js-task-status-trigger");
   const taskDueElm = node.querySelector(".js-task-due");
+  const taskPriorityElm = node.querySelector(".js-task-priority");
 
   listItemElm.dataset.id = task.id;
   taskTextElm.textContent = task.text;
   applyStatus(taskStatusTrigger, task.done);
   if (taskDueElm) applyDueDate(taskDueElm, task.dueDate);
+  if (taskPriorityElm) applyPriority(taskPriorityElm, task.priority);
 
   taskListElm.appendChild(node);
 };
@@ -84,7 +86,18 @@ const applyDueDate = (dueElm, dueDate) => {
   dueElm.hidden = false;
 };
 
-const renderTaskList = (taskTemplate, taskListElm, tasks, filter, searchTerm) => {
+const applyPriority = (priorityElm, priority) => {
+  priorityElm.textContent = priority;
+  priorityElm.hidden = false;
+};
+
+const renderTaskList = (
+  taskTemplate,
+  taskListElm,
+  tasks,
+  filter,
+  searchTerm
+) => {
   taskListElm.innerHTML = "";
   const visibleTasks = getFilteredTasks(tasks, filter).filter((task) =>
     matchesSearch(task, searchTerm)
@@ -98,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const newTaskInputElm = document.querySelector(".js-new-task-input");
   const newTaskDateElm = document.querySelector(".js-new-task-date");
+  const newTaskPriorityElm = document.querySelector(".js-new-task-priority");
   const taskTemplate = document.getElementById("list-item-template");
   const taskListElm = document.querySelector(".js-todo-list");
   const filterListElm = document.querySelector(".js-filter");
@@ -106,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     !addNewTaskButtonElm ||
     !newTaskInputElm ||
     !newTaskDateElm ||
+    !newTaskPriorityElm ||
     !taskListElm ||
     !taskTemplate ||
     !filterListElm
@@ -152,6 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearAndFocusInput = () => {
     newTaskInputElm.value = "";
     newTaskDateElm.value = "";
+    newTaskPriorityElm.value = "";
     newTaskInputElm.focus();
   };
 
@@ -160,8 +176,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!newTaskText) return;
 
     const newTaskDueDate = newTaskDateElm.value || null;
+    const newTaskPriority = newTaskPriorityElm.value || null;
 
-    tasks = addTask(tasks, newTaskText, newTaskDueDate);
+    tasks = addTask(tasks, newTaskText, newTaskDueDate, newTaskPriority);
     saveTasks(tasks);
     clearAndFocusInput();
     render();

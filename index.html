@@ -18,6 +18,17 @@
           <div class="input-date">
             <input type="date" class="input-date__input js-new-task-date" />
           </div>
+          <div class="input-select">
+            <select
+              name="priority"
+              class="input-select__select js-new-task-priority"
+            >
+              <option value="">Select</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
           <button class="action-add__button js-add-new-task-trigger">
             Add
           </button>
@@ -84,6 +95,7 @@
               ></button>
               <span class="todo-list__text js-task-text"></span>
               <time class="todo-list__due js-task-due" hidden></time>
+              <span class="todo-list__priority js-task-priority" hidden></span>
             </div>
 
             <button class="todo-list__delete js-delete-task-trigger">
