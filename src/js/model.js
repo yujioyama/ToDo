@@ -9,7 +9,7 @@
  * @property {boolean} done Completion state.
  * @property {number} createdAt C timestamp when the task was created.
  * @property {string | null} [dueDate] ISO-8601 date string representing the due date.
- * @property {"low", "medium", "high"} priority
+ * @property {"low" | "medium" | "high" | null} priority Priority label, optional.
  * @property {number} [updatedAt] Epoch timestamp of the last update.
  */
 

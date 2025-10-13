@@ -86,8 +86,20 @@ const applyDueDate = (dueElm, dueDate) => {
   dueElm.hidden = false;
 };
 
+const formatPriorityLabel = (priority) => {
+  if (!priority) return null;
+  return priority.charAt(0).toUpperCase() + priority.slice(1);
+};
+
 const applyPriority = (priorityElm, priority) => {
-  priorityElm.textContent = priority;
+  const formatted = formatPriorityLabel(priority);
+  if (!formatted) {
+    priorityElm.textContent = "";
+    priorityElm.hidden = true;
+    return;
+  }
+
+  priorityElm.textContent = `Priority: ${formatted}`;
   priorityElm.hidden = false;
 };
 
