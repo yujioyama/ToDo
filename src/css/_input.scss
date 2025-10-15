@@ -1,25 +1,30 @@
-.input-text {
-  &__input {
-    border: 1px solid black;
-  }
-
-  &--tags {
-    margin-left: 10px;
-  }
-}
-
-.input-date {
-  margin-left: 10px;
-
-  &__input {
-    border: 1px solid black;
-  }
-}
-
+.input-text,
+.input-date,
 .input-select {
-  margin-left: 10px;
+  width: 100%;
+}
 
-  &__select {
-    border: 1px solid black;
-  }
+.input-text__input,
+.input-date__input,
+.input-select__select {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-subtle);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.input-text__input:focus,
+.input-date__input:focus,
+.input-select__select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+  background: var(--color-surface);
+}
+
+.input-text--tags {
+  margin: 0;
 }

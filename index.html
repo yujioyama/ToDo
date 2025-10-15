@@ -6,136 +6,228 @@
     <title>Todo App</title>
     <script type="module" src="/src/js/main.js"></script>
   </head>
-  <body>
-    <main class="wrapper">
-      <h1>Todo App</h1>
-
-      <div>
-        <div class="action-add">
-          <div class="input-text">
-            <input type="text" class="input-text__input js-new-task-input" />
-          </div>
-          <div class="input-date">
-            <input type="date" class="input-date__input js-new-task-date" />
-          </div>
-          <div class="input-select">
-            <select
-              name="priority"
-              class="input-select__select js-new-task-priority"
-            >
-              <option value="">Select</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-          </div>
-          <div class="input-text input-text--tags">
-            <input
-              type="text"
-              class="input-text__input js-new-task-tags"
-              placeholder="Tags (comma separated)"
-            />
-          </div>
-          <button class="action-add__button js-add-new-task-trigger">
-            Add
+  <body class="theme-light">
+    <main class="app">
+      <header class="app-header">
+        <div class="app-header__brand">
+          <h1 class="app-header__title">Todo App</h1>
+          <p class="app-header__tagline">
+            Stay on top of your day with a focused productivity hub.
+          </p>
+        </div>
+        <div class="app-header__toolbar">
+          <button class="toolbar-button" type="button" disabled>
+            Dark mode coming soon
           </button>
         </div>
+      </header>
 
-        <div class="action">
-          <div class="action__row">
-            <div class="action__title">Search🔍 :</div>
-            <div class="action__search">
-              <div class="input-text">
-                <input type="text" class="input-text__input js-search" />
+      <div class="app-shell">
+        <aside class="app-shell__sidebar">
+          <section class="panel">
+            <h2 class="panel__title">Add Task</h2>
+            <p class="panel__tagline">
+              Capture a new task with optional due dates, priorities, and tags.
+            </p>
+            <div class="panel__body">
+              <div class="action-add">
+                <div class="input-text">
+                  <input
+                    type="text"
+                    class="input-text__input js-new-task-input"
+                    placeholder="What needs to be done?"
+                  />
+                </div>
+                <div class="input-date">
+                  <input
+                    type="date"
+                    class="input-date__input js-new-task-date"
+                  />
+                </div>
+                <div class="input-select">
+                  <select
+                    name="priority"
+                    class="input-select__select js-new-task-priority"
+                  >
+                    <option value="">Priority</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+                <div class="input-text input-text--tags">
+                  <input
+                    type="text"
+                    class="input-text__input js-new-task-tags"
+                    placeholder="Tags (comma separated)"
+                  />
+                </div>
+                <button class="action-add__button js-add-new-task-trigger">
+                  Add task
+                </button>
               </div>
             </div>
-          </div>
-          <div class="action__row">
-            <div class="action__title">Filter:</div>
-            <ul class="action-buttons js-filter">
-              <li class="action-buttons__list">
-                <label class="action-buttons__label">
-                  <input
-                    type="radio"
-                    name="filter"
-                    value="all"
-                    class="action-buttons__input js-filter-trigger"
-                    checked
-                  />
-                  <span class="action-buttons__text">All</span>
-                </label>
-              </li>
-              <li class="action-buttons__list">
-                <label class="action-buttons__label">
-                  <input
-                    type="radio"
-                    name="filter"
-                    value="active"
-                    class="action-buttons__input js-filter-trigger"
-                  />
-                  <span class="action-buttons__text">Active</span>
-                </label>
-              </li>
-              <li class="action-buttons__list">
-                <label class="action-buttons__label">
-                  <input
-                    type="radio"
-                    name="filter"
-                    value="done"
-                    class="action-buttons__input js-filter-trigger"
-                  />
-                  <span class="action-buttons__text">Done</span>
-                </label>
-              </li>
-            </ul>
-          </div>
-          <div class="action__row">
-            <div class="action__title">Sort:</div>
-            <div class="action__sort">
-              <div class="input-select">
-                <select class="input-select__select js-sort">
-                  <option value="none">None</option>
-                  <option value="dueDate">Due date</option>
-                  <option value="priority">Priority</option>
-                </select>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel__title">Refine</h2>
+            <p class="panel__tagline">
+              Search, filter, and sort to focus on what matters now.
+            </p>
+            <div class="panel__body">
+              <div class="action">
+                <div class="action__row">
+                  <div class="action__title">Search</div>
+                  <div class="action__search">
+                    <div class="input-text">
+                      <input
+                        type="text"
+                        class="input-text__input js-search"
+                        placeholder="Type to filter tasks"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="action__row">
+                  <div class="action__title">Status</div>
+                  <ul class="action-buttons js-filter">
+                    <li class="action-buttons__list">
+                      <label class="action-buttons__label">
+                        <input
+                          type="radio"
+                          name="filter"
+                          value="all"
+                          class="action-buttons__input js-filter-trigger"
+                          checked
+                        />
+                        <span class="action-buttons__text">All</span>
+                      </label>
+                    </li>
+                    <li class="action-buttons__list">
+                      <label class="action-buttons__label">
+                        <input
+                          type="radio"
+                          name="filter"
+                          value="active"
+                          class="action-buttons__input js-filter-trigger"
+                        />
+                        <span class="action-buttons__text">Active</span>
+                      </label>
+                    </li>
+                    <li class="action-buttons__list">
+                      <label class="action-buttons__label">
+                        <input
+                          type="radio"
+                          name="filter"
+                          value="done"
+                          class="action-buttons__input js-filter-trigger"
+                        />
+                        <span class="action-buttons__text">Done</span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+                <div class="action__row">
+                  <div class="action__title">Sort</div>
+                  <div class="action__sort">
+                    <div class="input-select">
+                      <select class="input-select__select js-sort">
+                        <option value="none">None</option>
+                        <option value="dueDate">Due date</option>
+                        <option value="priority">Priority</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="action__row">
+                  <div class="action__title">Tags</div>
+                  <div class="action__filter">
+                    <div class="input-text input-text--tags">
+                      <input
+                        type="text"
+                        class="input-text__input js-tag-filter"
+                        placeholder="Filter tags (comma separated)"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="action__row">
-            <div class="action__title">Tag Filter:</div>
-            <div class="action__filter">
-              <div class="input-text input-text--tags">
-                <input
-                  type="text"
-                  class="input-text__input js-tag-filter"
-                  placeholder="Filter tags (comma separated)"
-                />
-              </div>
+          </section>
+        </aside>
+
+        <section class="app-shell__content">
+          <section class="metrics" aria-label="Task overview">
+            <article class="metric-card">
+              <span class="metric-card__label">Total Tasks</span>
+              <span class="metric-card__value js-metric-total">0</span>
+              <span class="metric-card__helper">
+                All items across your lists
+              </span>
+            </article>
+            <article class="metric-card">
+              <span class="metric-card__label">Completed</span>
+              <span class="metric-card__value js-metric-complete">0</span>
+              <span class="metric-card__helper">
+                Tasks marked as done
+              </span>
+            </article>
+            <article class="metric-card">
+              <span class="metric-card__label">In Progress</span>
+              <span class="metric-card__value js-metric-active">0</span>
+              <span class="metric-card__helper">
+                Tasks still waiting for attention
+              </span>
+            </article>
+            <article class="metric-card">
+              <span class="metric-card__label">Completion</span>
+              <span class="metric-card__value js-metric-rate">0%</span>
+              <span class="metric-card__helper">
+                Share of tasks completed
+              </span>
+            </article>
+          </section>
+
+          <section class="panel panel--list">
+            <h2 class="panel__title">Task List</h2>
+            <p class="panel__tagline">
+              Tap a task to edit inline, toggle, or remove it.
+            </p>
+            <div class="panel__body panel__body--flush">
+              <ul class="todo-list js-todo-list"></ul>
             </div>
-          </div>
-        </div>
-
-        <ul class="todo-list js-todo-list"></ul>
-
-        <template id="list-item-template">
-          <li class="todo-list__item js-todo-list-item" data-id>
-            <div class="todo-list__left">
-              <button
-                class="todo-list__status js-task-status-trigger"
-                aria-label="Mark as complete"
-              ></button>
-              <span class="todo-list__text js-task-text"></span>
-              <time class="todo-list__due js-task-due" hidden></time>
-              <span class="todo-list__priority js-task-priority" hidden></span>
-              <span class="todo-list__tags js-task-tags" hidden></span>
-            </div>
-
-            <button class="todo-list__delete js-delete-task-trigger">
-              delete
-            </button>
-          </li>
-        </template>
+          </section>
+        </section>
       </div>
+
+      <div
+        class="toast-layer js-toast-layer"
+        aria-live="polite"
+        aria-atomic="true"
+      ></div>
+
+      <template id="list-item-template">
+        <li class="todo-list__item js-todo-list-item" data-id>
+          <div class="todo-list__left">
+            <button
+              class="todo-list__status js-task-status-trigger"
+              aria-label="Mark as complete"
+            ></button>
+            <div class="todo-list__content">
+              <span class="todo-list__text js-task-text"></span>
+              <div class="todo-list__meta">
+                <time class="todo-list__due js-task-due" hidden></time>
+                <span class="todo-list__priority js-task-priority" hidden></span>
+                <span class="todo-list__tags js-task-tags" hidden></span>
+              </div>
+            </div>
+          </div>
+
+          <button class="todo-list__delete js-delete-task-trigger">
+            Delete
+          </button>
+        </li>
+      </template>
     </main>
   </body>
 </html>

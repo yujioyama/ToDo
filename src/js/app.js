@@ -349,6 +349,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const taskListElm = document.querySelector(".js-todo-list");
   const filterListElm = document.querySelector(".js-filter");
   const sortSelectElm = document.querySelector(".js-sort");
+  const metricTotalElm = document.querySelector(".js-metric-total");
+  const metricCompleteElm = document.querySelector(".js-metric-complete");
+  const metricActiveElm = document.querySelector(".js-metric-active");
+  const metricRateElm = document.querySelector(".js-metric-rate");
 
   if (
     !addNewTaskButtonElm ||
@@ -397,13 +401,47 @@ document.addEventListener("DOMContentLoaded", () => {
   const syncSortControl = () => {
     sortSelectElm.value = currentSort;
   };
+  /**
+   * Reflect the active tag filter array within the input field.
+   *
+   * @returns {void}
+   */
   const syncTagFilterControl = () => {
     tagFilterInputElm.value = currentTagFilter.join(", ");
   };
 
   let currentSearchTerm = "";
 
+  /**
+   * Update the dashboard metrics to match the current task collection.
+   *
+   * @param {import("./model.js").Task[]} allTasks All tracked tasks.
+   * @returns {void}
+   */
+  const updateMetrics = (allTasks) => {
+    if (
+      !metricTotalElm ||
+      !metricCompleteElm ||
+      !metricActiveElm ||
+      !metricRateElm
+    )
+      return;
+
+    const total = allTasks.length;
+    const completed = allTasks.filter((task) => task.done).length;
+    const active = total - completed;
+    const completionRate = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    metricTotalElm.textContent = String(total);
+    metricCompleteElm.textContent = String(completed);
+    metricActiveElm.textContent = String(active);
+    metricRateElm.textContent = `${completionRate}%`;
+  };
+
   const render = () => {
+    /**
+     * Render pipeline orchestrates filtering/tag matching/sorting and metrics refresh.
+     */
     renderTaskList(
       taskTemplate,
       taskListElm,
@@ -413,6 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentSort,
       currentTagFilter
     );
+    updateMetrics(tasks);
   };
 
   syncFilterControls();

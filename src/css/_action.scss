@@ -1,44 +1,79 @@
 .action-add {
   display: flex;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: var(--gap-sm);
 
   &__button {
-    margin-left: 10px;
-    padding: 5px;
-    background-color: blue;
-    border-radius: 3px;
-    color: white;
+    align-self: flex-start;
+    padding: 10px 18px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(37, 99, 235, 0.25);
+    }
   }
 }
 
 .action {
-  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
 
   &__row {
     display: flex;
-    &:not(:first-child) {
-      margin-top: 10px;
-    }
+    flex-direction: column;
+    gap: 8px;
   }
 
-  &__sort {
-    margin-left: 10px;
-    display: flex;
+  &__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
   }
 
+  &__search,
+  &__sort,
   &__filter {
-    margin-left: 10px;
     display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
   }
 }
 
 .action-buttons {
   display: flex;
-  margin-left: 10px;
+  gap: var(--gap-sm);
 
-  &__list {
-    &:not(:first-child) {
-      margin-left: 10px;
-    }
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-subtle);
+    transition: background 0.2s ease, border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  &__input {
+    display: none;
+  }
+
+  &__input:checked + .action-buttons__text {
+    color: var(--color-accent);
+  }
+
+  &__label:has(.action-buttons__input:checked) {
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
   }
 }

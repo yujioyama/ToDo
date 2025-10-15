@@ -1,70 +1,95 @@
 .todo-list {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-subtle);
+    transition: transform 0.2s ease, box-shadow 0.2s ease,
+      border-color 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-soft);
+      border-color: rgba(37, 99, 235, 0.35);
+    }
+  }
 
   &__left {
     display: flex;
     align-items: center;
+    gap: var(--gap-sm);
+    flex: 1;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   &__status {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    border: 1px solid gray;
+    border: 2px solid var(--color-border);
+    transition: background 0.2s ease, border-color 0.2s ease;
 
-    &.is-complete::before {
-      content: "";
-      display: block;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background-color: red;
-    }
-  }
+    &.is-complete {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
 
-  &__item {
-    display: flex;
-
-    &:not(:first-child) {
-      margin-top: 10px;
+      &::before {
+        content: "";
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #fff;
+      }
     }
   }
 
   &__text {
-    margin-left: 10px;
+    font-size: 1rem;
+    font-weight: 500;
   }
 
-  &__due {
-    margin-left: 10px;
-    font-size: 0.85em;
-    color: #666;
-  }
-
-  &__priority {
-    margin-left: 10px;
-    color: blue;
-  }
-
+  &__due,
+  &__priority,
   &__tags {
-    margin-left: 10px;
-    font-size: 0.85em;
-    color: #444;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   &__delete {
-    margin-left: 10px;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease, transform 0.2s ease;
 
     &:hover {
-      transition-duration: 0.3s;
-      color: blue;
+      color: #ef4444;
+      transform: translateY(-1px);
     }
   }
 
   &__editWrap {
-    margin-left: 10px;
     display: inline-flex;
     align-items: center;
   }
