@@ -219,31 +219,6 @@
   z-index: 10;
 }
 
-.toast {
-  min-width: 260px;
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  box-shadow: var(--shadow-soft);
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--gap-sm);
-  pointer-events: auto;
-}
-
-.toast__message {
-  font-size: 0.95rem;
-}
-
-.toast__action {
-  font-size: 0.85rem;
-  color: var(--color-accent);
-  font-weight: 600;
-}
-
 @media (max-width: 960px) {
   .app {
     padding: var(--gap-md);
