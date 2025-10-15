@@ -4,6 +4,8 @@
 
 const LIST_ITEMS_LOCAL_STORAGE = "listItems";
 const FILTER_LOCAL_STORAGE = "listFilter";
+const SORT_LOCAL_STORAGE = "listSort";
+const TAG_FILTER_LOCAL_STORAGE = "tagFilter";
 
 /**
  * Read tasks from localStorage.
@@ -53,4 +55,56 @@ export const loadFilter = () => {
  */
 export const saveFilter = (filter) => {
   localStorage.setItem(FILTER_LOCAL_STORAGE, filter);
+};
+
+/**
+ * Read the saved sort value from localStorage.
+ *
+ * @returns {"none" | "dueDate" | "priority" | null} Stored sort identifier or null when absent.
+ */
+export const loadSort = () => {
+  try {
+    const savedSort = localStorage.getItem(SORT_LOCAL_STORAGE);
+    return savedSort ? savedSort : null;
+  } catch (e) {
+    console.error("Failed to load sort from localStorage", e);
+    return null;
+  }
+};
+
+/**
+ * Persist sort into localStorage.
+ *
+ * @param {"none" | "dueDate" | "priority"} sort
+ * @returns {void}
+ */
+export const saveSort = (sort) => {
+  localStorage.setItem(SORT_LOCAL_STORAGE, sort);
+};
+
+/**
+ * Read the saved tag filter from localStorage.
+ *
+ * @returns {string[] | null} Array of tag filters, or null when unset.
+ */
+export const loadTagFilter = () => {
+  try {
+    const saved = localStorage.getItem(TAG_FILTER_LOCAL_STORAGE);
+    if (!saved) return null;
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : null;
+  } catch (e) {
+    console.error("Failed to load tag filter from localStorage", e);
+    return null;
+  }
+};
+
+/**
+ * Persist tag filter into localStorage.
+ *
+ * @param {string[]} tags
+ * @returns {void}
+ */
+export const saveTagFilter = (tags) => {
+  localStorage.setItem(TAG_FILTER_LOCAL_STORAGE, JSON.stringify(tags));
 };

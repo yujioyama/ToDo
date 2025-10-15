@@ -20,6 +20,16 @@
       margin-top: 10px;
     }
   }
+
+  &__sort {
+    margin-left: 10px;
+    display: flex;
+  }
+
+  &__filter {
+    margin-left: 10px;
+    display: flex;
+  }
 }
 
 .action-buttons {

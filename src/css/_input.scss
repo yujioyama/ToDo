@@ -2,12 +2,24 @@
   &__input {
     border: 1px solid black;
   }
+
+  &--tags {
+    margin-left: 10px;
+  }
 }
 
 .input-date {
   margin-left: 10px;
 
   &__input {
+    border: 1px solid black;
+  }
+}
+
+.input-select {
+  margin-left: 10px;
+
+  &__select {
     border: 1px solid black;
   }
 }

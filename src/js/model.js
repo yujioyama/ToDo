@@ -10,6 +10,7 @@
  * @property {number} createdAt C timestamp when the task was created.
  * @property {string | null} [dueDate] ISO-8601 date string representing the due date.
  * @property {"low" | "medium" | "high" | null} priority Priority label, optional.
+ * @property {string[]} tags Associated tags for grouping/filtering.
  * @property {number} [updatedAt] Epoch timestamp of the last update.
  */
 
@@ -20,9 +21,14 @@
  * @param {string} text Raw text for the new task.
  * @param {string | null | undefined} [dueDate] Optional ISO date string (YYYY-MM-DD).
  * @param {"low" | "medium" | "high" | null | undefined} priority
+ * @param {string[] | null | undefined} tags Optional list of tags.
  * @returns {Task[]} New list with the appended task.
  */
-export const addTask = (tasks, text, dueDate, priority) => {
+export const addTask = (tasks, text, dueDate, priority, tags) => {
+  const safeTags = Array.isArray(tags)
+    ? tags.filter((tag) => typeof tag === "string" && tag.trim().length > 0)
+    : [];
+
   return [
     ...tasks,
     {
@@ -32,6 +38,7 @@ export const addTask = (tasks, text, dueDate, priority) => {
       createdAt: Date.now(),
       dueDate: dueDate ?? null,
       priority: priority ?? null,
+      tags: safeTags.map((tag) => tag.trim()),
     },
   ];
 };

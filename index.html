@@ -29,6 +29,13 @@
               <option value="low">Low</option>
             </select>
           </div>
+          <div class="input-text input-text--tags">
+            <input
+              type="text"
+              class="input-text__input js-new-task-tags"
+              placeholder="Tags (comma separated)"
+            />
+          </div>
           <button class="action-add__button js-add-new-task-trigger">
             Add
           </button>
@@ -82,6 +89,30 @@
               </li>
             </ul>
           </div>
+          <div class="action__row">
+            <div class="action__title">Sort:</div>
+            <div class="action__sort">
+              <div class="input-select">
+                <select class="input-select__select js-sort">
+                  <option value="none">None</option>
+                  <option value="dueDate">Due date</option>
+                  <option value="priority">Priority</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="action__row">
+            <div class="action__title">Tag Filter:</div>
+            <div class="action__filter">
+              <div class="input-text input-text--tags">
+                <input
+                  type="text"
+                  class="input-text__input js-tag-filter"
+                  placeholder="Filter tags (comma separated)"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         <ul class="todo-list js-todo-list"></ul>
@@ -96,6 +127,7 @@
               <span class="todo-list__text js-task-text"></span>
               <time class="todo-list__due js-task-due" hidden></time>
               <span class="todo-list__priority js-task-priority" hidden></span>
+              <span class="todo-list__tags js-task-tags" hidden></span>
             </div>
 
             <button class="todo-list__delete js-delete-task-trigger">
