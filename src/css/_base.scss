@@ -19,10 +19,20 @@
   --gap-sm: 12px;
 }
 
-body {
+.theme-light,
+.theme-dark {
+  min-height: 100%;
+}
+
+.theme-light body,
+.theme-dark body {
   font-family: var(--font-family-base);
   background: var(--color-bg);
   color: var(--color-text);
+}
+
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 button {
@@ -52,13 +62,13 @@ button {
 
 .theme-dark {
   color-scheme: dark;
-  --color-bg: #0f172a;
-  --color-surface: #1e293b;
-  --color-surface-subtle: #111827;
-  --color-border: rgba(148, 163, 184, 0.24);
-  --color-text: #e2e8f0;
-  --color-text-muted: #94a3b8;
-  --color-accent: #60a5fa;
-  --color-accent-soft: rgba(96, 165, 250, 0.16);
-  --shadow-soft: 0 12px 40px rgba(15, 23, 42, 0.35);
+  --color-bg: #000209;
+  --color-surface: #0a1220;
+  --color-surface-subtle: #040915;
+  --color-border: rgba(148, 163, 184, 0.2);
+  --color-text: #fdfdff;
+  --color-text-muted: rgba(239, 243, 255, 0.78);
+  --color-accent: #a7ceff;
+  --color-accent-soft: rgba(167, 206, 255, 0.25);
+  --shadow-soft: 0 18px 48px rgba(2, 6, 23, 0.45);
 }

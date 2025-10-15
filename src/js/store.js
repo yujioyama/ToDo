@@ -6,6 +6,7 @@ const LIST_ITEMS_LOCAL_STORAGE = "listItems";
 const FILTER_LOCAL_STORAGE = "listFilter";
 const SORT_LOCAL_STORAGE = "listSort";
 const TAG_FILTER_LOCAL_STORAGE = "tagFilter";
+const THEME_LOCAL_STORAGE = "uiTheme";
 
 /**
  * Read tasks from localStorage.
@@ -107,4 +108,30 @@ export const loadTagFilter = () => {
  */
 export const saveTagFilter = (tags) => {
   localStorage.setItem(TAG_FILTER_LOCAL_STORAGE, JSON.stringify(tags));
+};
+
+/**
+ * Load the stored UI theme preference.
+ *
+ * @returns {"theme-light" | "theme-dark" | null}
+ */
+export const loadTheme = () => {
+  try {
+    const saved = localStorage.getItem(THEME_LOCAL_STORAGE);
+    if (saved === "theme-light" || saved === "theme-dark") return saved;
+    return null;
+  } catch (e) {
+    console.error("Failed to load theme from localStorage", e);
+    return null;
+  }
+};
+
+/**
+ * Persist the UI theme preference.
+ *
+ * @param {"theme-light" | "theme-dark"} theme
+ * @returns {void}
+ */
+export const saveTheme = (theme) => {
+  localStorage.setItem(THEME_LOCAL_STORAGE, theme);
 };

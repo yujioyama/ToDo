@@ -11,6 +11,8 @@ import {
   saveSort,
   loadTagFilter,
   saveTagFilter,
+  loadTheme,
+  saveTheme,
 } from "./store.js";
 import { addTask, deleteTask, toggleTaskStatus, updateTask } from "./model.js";
 
@@ -353,6 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const metricCompleteElm = document.querySelector(".js-metric-complete");
   const metricActiveElm = document.querySelector(".js-metric-active");
   const metricRateElm = document.querySelector(".js-metric-rate");
+  const themeToggleButtonElm = document.querySelector(".js-theme-toggle");
 
   if (
     !addNewTaskButtonElm ||
@@ -364,7 +367,8 @@ document.addEventListener("DOMContentLoaded", () => {
     !taskTemplate ||
     !filterListElm ||
     !sortSelectElm ||
-    !tagFilterInputElm
+    !tagFilterInputElm ||
+    !themeToggleButtonElm
   )
     return;
 
@@ -411,6 +415,11 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   let currentSearchTerm = "";
+  let currentTheme =
+    loadTheme() ??
+    (window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "theme-dark"
+      : "theme-light");
 
   /**
    * Update the dashboard metrics to match the current task collection.
@@ -438,6 +447,21 @@ document.addEventListener("DOMContentLoaded", () => {
     metricRateElm.textContent = `${completionRate}%`;
   };
 
+  /**
+   * Apply the theme class to `<body>` and persist the preference.
+   *
+   * @param {"theme-light" | "theme-dark"} theme Next theme identifier.
+   * @returns {void}
+   */
+  const applyTheme = (theme) => {
+    currentTheme = theme;
+    saveTheme(currentTheme);
+    document.body.classList.remove("theme-light", "theme-dark");
+    document.body.classList.add(currentTheme, "theme-transition");
+    themeToggleButtonElm.textContent =
+      currentTheme === "theme-dark" ? "Switch to light mode" : "Switch to dark mode";
+  };
+
   const render = () => {
     /**
      * Render pipeline orchestrates filtering/tag matching/sorting and metrics refresh.
@@ -457,6 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
   syncFilterControls();
   syncSortControl();
   syncTagFilterControl();
+  applyTheme(currentTheme);
   render();
 
   const clearAndFocusInput = () => {
@@ -627,5 +652,10 @@ document.addEventListener("DOMContentLoaded", () => {
     saveTagFilter(currentTagFilter);
     syncTagFilterControl();
     render();
+  });
+
+  themeToggleButtonElm.addEventListener("click", () => {
+    const nextTheme = currentTheme === "theme-dark" ? "theme-light" : "theme-dark";
+    applyTheme(nextTheme);
   });
 });
