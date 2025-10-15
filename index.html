@@ -194,6 +194,32 @@
               Tap a task to edit inline, toggle, or remove it.
             </p>
             <div class="panel__body panel__body--flush">
+              <div class="bulk-actions">
+                <label class="bulk-actions__select">
+                  <input
+                    type="checkbox"
+                    class="bulk-actions__checkbox js-select-all"
+                    aria-label="Select all visible tasks"
+                  />
+                  <span>Select all</span>
+                </label>
+                <div class="bulk-actions__buttons">
+                  <button
+                    class="toolbar-button js-bulk-complete"
+                    type="button"
+                    disabled
+                  >
+                    Mark selected complete
+                  </button>
+                  <button
+                    class="toolbar-button toolbar-button--danger js-bulk-delete"
+                    type="button"
+                    disabled
+                  >
+                    Delete selected
+                  </button>
+                </div>
+              </div>
               <ul class="todo-list js-todo-list"></ul>
             </div>
           </section>
@@ -209,6 +235,11 @@
       <template id="list-item-template">
         <li class="todo-list__item js-todo-list-item" data-id>
           <div class="todo-list__left">
+            <input
+              class="todo-list__select js-task-select"
+              type="checkbox"
+              aria-label="Select task"
+            />
             <button
               class="todo-list__status js-task-status-trigger"
               aria-label="Mark as complete"

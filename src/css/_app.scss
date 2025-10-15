@@ -61,6 +61,18 @@
     }
   }
 
+  &--danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.2);
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.18);
+      color: #b91c1c;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+  }
+
   &:not(:disabled):hover {
     background: var(--color-accent-soft);
     color: var(--color-accent);
@@ -129,6 +141,37 @@
 
 .panel--list {
   min-height: 420px;
+}
+
+.bulk-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  padding: var(--gap-sm) var(--gap-md);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  &__select {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  &__checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-accent);
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+  }
 }
 
 .metrics {

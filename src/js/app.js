@@ -93,9 +93,10 @@ const applyTags = (tagsElm, tags) => {
  * @param {HTMLTemplateElement} taskTemplate Task list item template.
  * @param {import("./model.js").Task} task Task record to render.
  * @param {HTMLElement} taskListElm List container element.
+ * @param {Set<string>} [selectedTaskIds] Collection of task ids that are currently selected.
  * @returns {void}
  */
-const insertTask = (taskTemplate, task, taskListElm) => {
+const insertTask = (taskTemplate, task, taskListElm, selectedTaskIds) => {
   const node = taskTemplate.content.cloneNode(true);
   const listItemElm = node.querySelector(".js-todo-list-item");
   const taskTextElm = node.querySelector(".js-task-text");
@@ -103,10 +104,15 @@ const insertTask = (taskTemplate, task, taskListElm) => {
   const taskDueElm = node.querySelector(".js-task-due");
   const taskPriorityElm = node.querySelector(".js-task-priority");
   const taskTagsElm = node.querySelector(".js-task-tags");
+  const taskSelectElm = node.querySelector(".js-task-select");
 
   listItemElm.dataset.id = task.id;
   taskTextElm.textContent = task.text;
   applyStatus(taskStatusTrigger, task.done);
+  if (taskSelectElm) {
+    const isSelected = selectedTaskIds?.has ? selectedTaskIds.has(task.id) : false;
+    taskSelectElm.checked = isSelected;
+  }
   if (taskDueElm) applyDueDate(taskDueElm, task.dueDate);
   if (taskPriorityElm) applyPriority(taskPriorityElm, task.priority);
   if (taskTagsElm) applyTags(taskTagsElm, task.tags);
@@ -312,7 +318,8 @@ const applyPriority = (priorityElm, priority) => {
  * @param {string} searchTerm Current search term.
  * @param {"none" | "dueDate" | "priority"} sort Active sort key.
  * @param {string[]} tagFilter Tags that must appear on each task.
- * @returns {void}
+ * @param {Set<string>} selectedTaskIds Currently selected task identifiers.
+ * @returns {import("./model.js").Task[]} Tasks rendered to the DOM.
  */
 const renderTaskList = (
   taskTemplate,
@@ -321,7 +328,8 @@ const renderTaskList = (
   filter,
   searchTerm,
   sort,
-  tagFilter
+  tagFilter,
+  selectedTaskIds
 ) => {
   taskListElm.innerHTML = "";
   const filteredTasks = getFilteredTasks(tasks, filter);
@@ -332,7 +340,9 @@ const renderTaskList = (
     matchesTagFilter(task, tagFilter)
   );
   const visibleTasks = getSortedTasks(tagFilteredTasks, sort);
-  for (const task of visibleTasks) insertTask(taskTemplate, task, taskListElm);
+  for (const task of visibleTasks)
+    insertTask(taskTemplate, task, taskListElm, selectedTaskIds);
+  return visibleTasks;
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -356,6 +366,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const metricActiveElm = document.querySelector(".js-metric-active");
   const metricRateElm = document.querySelector(".js-metric-rate");
   const themeToggleButtonElm = document.querySelector(".js-theme-toggle");
+  const selectAllCheckboxElm = document.querySelector(".js-select-all");
+  const bulkCompleteButtonElm = document.querySelector(".js-bulk-complete");
+  const bulkDeleteButtonElm = document.querySelector(".js-bulk-delete");
 
   if (
     !addNewTaskButtonElm ||
@@ -368,7 +381,10 @@ document.addEventListener("DOMContentLoaded", () => {
     !filterListElm ||
     !sortSelectElm ||
     !tagFilterInputElm ||
-    !themeToggleButtonElm
+    !themeToggleButtonElm ||
+    !selectAllCheckboxElm ||
+    !bulkCompleteButtonElm ||
+    !bulkDeleteButtonElm
   )
     return;
 
@@ -395,6 +411,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentSort = availableSortValues.has(savedSort) ? savedSort : "none";
   const savedTagFilter = loadTagFilter();
   let currentTagFilter = normalizeTags(savedTagFilter ?? []);
+  const selectedTaskIds = new Set();
+  let visibleTaskIds = [];
 
   const syncFilterControls = () => {
     const targetInput = filterListElm.querySelector(
@@ -412,6 +430,44 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   const syncTagFilterControl = () => {
     tagFilterInputElm.value = currentTagFilter.join(", ");
+  };
+
+  const pruneSelectedTasks = () => {
+    const existingIds = new Set(tasks.map((task) => task.id));
+    for (const taskId of Array.from(selectedTaskIds)) {
+      if (!existingIds.has(taskId)) selectedTaskIds.delete(taskId);
+    }
+  };
+
+  const updateBulkActionControls = () => {
+    const hasSelection = selectedTaskIds.size > 0;
+    bulkCompleteButtonElm.disabled = !hasSelection;
+    bulkDeleteButtonElm.disabled = !hasSelection;
+
+    if (visibleTaskIds.length === 0) {
+      selectAllCheckboxElm.checked = false;
+      selectAllCheckboxElm.indeterminate = false;
+      selectAllCheckboxElm.disabled = true;
+      return;
+    }
+
+    selectAllCheckboxElm.disabled = false;
+
+    let visibleSelectedCount = 0;
+    for (const taskId of visibleTaskIds) {
+      if (selectedTaskIds.has(taskId)) visibleSelectedCount += 1;
+    }
+
+    if (visibleSelectedCount === 0) {
+      selectAllCheckboxElm.checked = false;
+      selectAllCheckboxElm.indeterminate = false;
+    } else if (visibleSelectedCount === visibleTaskIds.length) {
+      selectAllCheckboxElm.checked = true;
+      selectAllCheckboxElm.indeterminate = false;
+    } else {
+      selectAllCheckboxElm.checked = false;
+      selectAllCheckboxElm.indeterminate = true;
+    }
   };
 
   let currentSearchTerm = "";
@@ -464,17 +520,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const render = () => {
     /**
-     * Render pipeline orchestrates filtering/tag matching/sorting and metrics refresh.
+     * Render pipeline orchestrates filtering/tag matching/sorting, selection syncing, and metrics refresh.
      */
-    renderTaskList(
+    pruneSelectedTasks();
+    const visibleTasks = renderTaskList(
       taskTemplate,
       taskListElm,
       tasks,
       currentFilter,
       currentSearchTerm,
       currentSort,
-      currentTagFilter
+      currentTagFilter,
+      selectedTaskIds
     );
+    visibleTaskIds = visibleTasks.map((task) => task.id);
+    updateBulkActionControls();
     updateMetrics(tasks);
   };
 
@@ -602,6 +662,24 @@ document.addEventListener("DOMContentLoaded", () => {
     inputElm.focus();
   };
 
+  taskListElm.addEventListener("change", (e) => {
+    const selectCheckboxElm = e.target.closest?.(".js-task-select");
+    if (!selectCheckboxElm) return;
+
+    const listItemElm = selectCheckboxElm.closest(".js-todo-list-item");
+    if (!listItemElm) return;
+
+    const taskId = listItemElm.dataset.id;
+    if (!taskId) return;
+
+    if (selectCheckboxElm.checked) {
+      selectedTaskIds.add(taskId);
+    } else {
+      selectedTaskIds.delete(taskId);
+    }
+    updateBulkActionControls();
+  });
+
   taskListElm.addEventListener("click", (e) => {
     const deleteButtonElm = e.target.closest?.(".js-delete-task-trigger");
     if (deleteButtonElm) {
@@ -617,6 +695,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const taskTextElm = e.target.closest?.(".js-task-text");
     if (taskTextElm) startEditingTask(taskTextElm);
+  });
+
+  selectAllCheckboxElm.addEventListener("change", () => {
+    if (visibleTaskIds.length === 0) return;
+
+    if (selectAllCheckboxElm.checked) {
+      for (const taskId of visibleTaskIds) selectedTaskIds.add(taskId);
+    } else {
+      for (const taskId of visibleTaskIds) selectedTaskIds.delete(taskId);
+    }
+    render();
+  });
+
+  bulkCompleteButtonElm.addEventListener("click", () => {
+    if (selectedTaskIds.size === 0) return;
+
+    tasks = tasks.map((task) => {
+      if (!selectedTaskIds.has(task.id) || task.done) return task;
+      return { ...task, done: true, updatedAt: Date.now() };
+    });
+    saveTasks(tasks);
+    render();
+  });
+
+  bulkDeleteButtonElm.addEventListener("click", () => {
+    if (selectedTaskIds.size === 0) return;
+
+    const idsToDelete = new Set(selectedTaskIds);
+    tasks = tasks.filter((task) => !idsToDelete.has(task.id));
+    saveTasks(tasks);
+    render();
   });
 
   filterListElm.addEventListener("change", (e) => {

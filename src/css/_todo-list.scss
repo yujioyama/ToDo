@@ -29,6 +29,13 @@
     flex: 1;
   }
 
+  &__select {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: var(--color-accent);
+  }
+
   &__content {
     display: flex;
     flex-direction: column;
