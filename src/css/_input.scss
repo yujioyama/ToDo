@@ -28,3 +28,13 @@
 .input-text--tags {
   margin: 0;
 }
+
+.input-text--error .input-text__input {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px var(--color-danger-soft);
+  background: var(--color-surface);
+}
+
+.input-text__feedback {
+  margin-top: 6px;
+}

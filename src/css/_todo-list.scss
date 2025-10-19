@@ -118,7 +118,9 @@
 
   &__editWrap {
     display: inline-flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 
   &__edit {
@@ -133,5 +135,13 @@
       outline: none;
       box-shadow: none;
     }
+  }
+
+  &__editWrap.is-invalid .todo-list__edit {
+    border-bottom: 2px solid var(--color-danger);
+  }
+
+  &__editFeedback {
+    font-size: 0.85rem;
   }
 }

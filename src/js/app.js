@@ -69,6 +69,194 @@ const parseTagsInput = (inputValue) => {
 };
 
 /**
+ * Create a toast manager that renders lightweight notifications inside the provided layer.
+ *
+ * @param {HTMLElement | null} layerElm Toast container element.
+ * @returns {{showToast: (config: {message: string, variant?: "info" | "success" | "error", duration?: number, action?: {label: string, handler: () => void}}) => () => void}} Toast API.
+ */
+const createToastManager = (layerElm) => {
+  if (!(layerElm instanceof HTMLElement)) {
+    return {
+      showToast: () => () => {},
+    };
+  }
+
+  const TOAST_VISIBLE_CLASS = "is-visible";
+  const EXIT_ANIMATION_MS = 180;
+
+  /**
+   * Render and display a toast notification.
+   *
+   * @param {Object} config Toast configuration.
+   * @param {string} config.message Message to display.
+   * @param {"info" | "success" | "error"} [config.variant="info"] Visual variant.
+   * @param {number} [config.duration=4000] Auto-dismiss timeout in milliseconds. Use 0 to disable.
+   * @param {{label: string, handler: () => void}} [config.action] Optional action button.
+   * @returns {() => void} Function that dismisses the toast early.
+   */
+  const showToast = ({
+    message,
+    variant = "info",
+    duration = 4000,
+    action,
+  }) => {
+    const toastElm = document.createElement("div");
+    toastElm.className = `toast toast--${variant}`;
+    toastElm.setAttribute("role", "status");
+
+    const messageElm = document.createElement("span");
+    messageElm.className = "toast__message";
+    messageElm.textContent = message;
+    toastElm.appendChild(messageElm);
+
+    let autoHideId = null; // Reference to the scheduled auto-dismiss timeout
+    let isHiding = false; // Prevent duplicate dismiss logic while animation runs
+
+    const cleanup = () => {
+      toastElm.remove();
+    };
+
+    /**
+     * Trigger the exit animation and remove the toast from the DOM.
+     *
+     * @returns {void}
+     */
+    const dismiss = () => {
+      if (isHiding || !toastElm.isConnected) return;
+      isHiding = true;
+      if (autoHideId !== null) window.clearTimeout(autoHideId);
+      toastElm.classList.remove(TOAST_VISIBLE_CLASS);
+      const handleTransitionEnd = () => {
+        toastElm.removeEventListener("transitionend", handleTransitionEnd);
+        cleanup();
+      };
+      toastElm.addEventListener("transitionend", handleTransitionEnd);
+      window.setTimeout(handleTransitionEnd, EXIT_ANIMATION_MS + 120);
+    };
+
+    if (
+      action &&
+      typeof action.label === "string" &&
+      typeof action.handler === "function"
+    ) {
+      const actionButton = document.createElement("button");
+      actionButton.type = "button";
+      actionButton.className = "toast__action";
+      actionButton.textContent = action.label;
+      actionButton.addEventListener("click", () => {
+        action.handler();
+        dismiss();
+      });
+      toastElm.appendChild(actionButton);
+    }
+
+    layerElm.appendChild(toastElm);
+    requestAnimationFrame(() => {
+      toastElm.classList.add(TOAST_VISIBLE_CLASS);
+    });
+
+    if (typeof duration === "number" && duration > 0) {
+      autoHideId = window.setTimeout(() => {
+        dismiss();
+      }, duration);
+    }
+
+    return dismiss;
+  };
+
+  return { showToast };
+};
+
+/**
+ * Factory that exposes helpers to show and clear inline validation feedback.
+ *
+ * @returns {{show: (input: HTMLInputElement, message: string) => void, clear: (input: HTMLInputElement) => void}}
+ */
+const createInlineFeedback = () => {
+  /**
+   * Resolve the container element that should host the feedback message.
+   *
+   * @param {HTMLElement} inputElm
+   * @returns {HTMLElement | null}
+   */
+  const findContainer = (inputElm) => {
+    return (
+      inputElm.closest(".input-text") ?? inputElm.closest(".todo-list__editWrap")
+    );
+  };
+
+  /**
+   * Map supported containers to their feedback/flag classes.
+   *
+   * @param {HTMLElement} container
+   * @returns {{feedbackClass: string, errorClass: string} | null}
+   */
+  const getContainerMeta = (container) => {
+    if (!container) return null;
+    if (container.classList.contains("input-text")) {
+      return {
+        feedbackClass: "input-text__feedback",
+        errorClass: "input-text--error",
+      };
+    }
+    if (container.classList.contains("todo-list__editWrap")) {
+      return {
+        feedbackClass: "todo-list__editFeedback",
+        errorClass: "is-invalid",
+      };
+    }
+    return null;
+  };
+
+  /**
+   * Present an inline validation message next to the given input element.
+   *
+   * @param {HTMLInputElement} inputElm
+   * @param {string} message
+   * @returns {void}
+   */
+  const show = (inputElm, message) => {
+    const container = findContainer(inputElm);
+    const meta = getContainerMeta(container);
+    if (!container || !meta) return;
+
+    let feedbackElm = container.querySelector(`.${meta.feedbackClass}`);
+    if (!feedbackElm) {
+      feedbackElm = document.createElement("p");
+      feedbackElm.className = `${meta.feedbackClass} form-feedback form-feedback--error`;
+      container.appendChild(feedbackElm);
+    }
+    feedbackElm.textContent = message;
+    feedbackElm.hidden = false;
+
+    container.classList.add(meta.errorClass);
+    inputElm.setAttribute("aria-invalid", "true");
+  };
+
+  /**
+   * Remove inline validation styling and hide the helper message.
+   *
+   * @param {HTMLInputElement} inputElm
+   * @returns {void}
+   */
+  const clear = (inputElm) => {
+    const container = findContainer(inputElm);
+    const meta = getContainerMeta(container);
+    if (!container || !meta) return;
+
+    container.classList.remove(meta.errorClass);
+    inputElm.removeAttribute("aria-invalid");
+    const feedbackElm = container.querySelector(`.${meta.feedbackClass}`);
+    if (feedbackElm) {
+      feedbackElm.textContent = "";
+      feedbackElm.hidden = true;
+    }
+  };
+
+  return { show, clear };
+};
+
+/**
  * Update the tag display element for a task.
  *
  * @param {HTMLElement} tagsElm Element that renders the tags.
@@ -405,6 +593,10 @@ document.addEventListener("DOMContentLoaded", () => {
   )
     return;
 
+  const toastLayerElm = document.querySelector(".js-toast-layer");
+  const toastManager = createToastManager(toastLayerElm);
+  const inlineFeedback = createInlineFeedback();
+
   let tasks = loadTasks();
   tasks = tasks.map((task) => ({
     ...task,
@@ -434,6 +626,75 @@ document.addEventListener("DOMContentLoaded", () => {
   let draggedTaskId = null;
   let dragSourceElm = null;
   let dragOverTaskElm = null;
+  const UNDO_TIMEOUT_MS = 6000; // Window in which the user can undo deletions
+  /**
+   * Track the most recent destructive action to allow undo.
+   *
+   * @type {{entries: Array<{task: import("./model.js").Task, index: number}>, timeoutId: number} | null}
+   */
+  let pendingUndo = null; // Snapshot of the most recent deletions awaiting undo
+
+  const clearUndoState = () => {
+    if (pendingUndo?.timeoutId) window.clearTimeout(pendingUndo.timeoutId);
+    pendingUndo = null;
+  };
+
+  /**
+   * Reinsert deleted tasks at their previous positions.
+   *
+   * @param {Array<{task: import("./model.js").Task, index: number}>} entries
+   * @returns {void}
+   */
+  const restoreDeletedEntries = (entries) => {
+    if (!Array.isArray(entries) || entries.length === 0) return;
+    const sortedEntries = [...entries].sort((a, b) => a.index - b.index);
+    const restoredTasks = [...tasks];
+    for (const { task, index } of sortedEntries) {
+      const safeIndex = Math.min(Math.max(index, 0), restoredTasks.length);
+      restoredTasks.splice(safeIndex, 0, task);
+    }
+    tasks = restoredTasks;
+    saveTasks(tasks);
+    render();
+  };
+
+  /**
+   * Surface a toast notifying the user of deletions with an undo affordance.
+   *
+   * @param {Array<{task: import("./model.js").Task, index: number}>} entries
+   * @returns {void}
+   */
+  const scheduleDeletionUndo = (entries) => {
+    if (!Array.isArray(entries) || entries.length === 0) return;
+
+    clearUndoState();
+    const timeoutId = window.setTimeout(() => {
+      if (pendingUndo?.entries === entries) clearUndoState();
+    }, UNDO_TIMEOUT_MS);
+
+    pendingUndo = { entries, timeoutId };
+
+    const count = entries.length;
+    toastManager.showToast({
+      message: count === 1 ? "Task deleted" : `${count} tasks deleted`,
+      variant: "info",
+      duration: UNDO_TIMEOUT_MS,
+      action: {
+        label: "Undo",
+        handler: () => {
+          if (!pendingUndo || pendingUndo.entries !== entries) return;
+          clearUndoState();
+          restoreDeletedEntries(entries);
+          toastManager.showToast({
+            message:
+              count === 1 ? "Task restored" : `${count} tasks restored`,
+            variant: "success",
+            duration: 3200,
+          });
+        },
+      },
+    });
+  };
 
   const syncFilterControls = () => {
     const targetInput = filterListElm.querySelector(
@@ -589,7 +850,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const addTaskFromInput = () => {
     const newTaskText = newTaskInputElm.value.trim();
-    if (!newTaskText) return;
+    if (!newTaskText) {
+      inlineFeedback.show(newTaskInputElm, "Please enter a task.");
+      newTaskInputElm.focus();
+      return;
+    }
+    inlineFeedback.clear(newTaskInputElm);
 
     const newTaskDueDate = newTaskDateElm.value || null;
     const newTaskPriority = newTaskPriorityElm.value || null;
@@ -605,24 +871,26 @@ document.addEventListener("DOMContentLoaded", () => {
     saveTasks(tasks);
     clearAndFocusInput();
     render();
+    toastManager.showToast({
+      message: "Task added",
+      variant: "success",
+      duration: 2800,
+    });
   };
 
   addNewTaskButtonElm.addEventListener("click", () => {
-    if (!isInputValid(newTaskInputElm)) {
-      alert("Please enter a task.");
-      return;
-    }
     addTaskFromInput();
   });
 
   newTaskInputElm.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      if (!isInputValid(newTaskInputElm)) {
-        alert("Please enter a task.");
-        return;
-      }
+      e.preventDefault();
       addTaskFromInput();
     }
+  });
+
+  newTaskInputElm.addEventListener("input", () => {
+    if (isInputValid(newTaskInputElm)) inlineFeedback.clear(newTaskInputElm);
   });
 
   const toggleTaskStatusHandler = (changeStatusButtonElm) => {
@@ -630,9 +898,26 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!listItemElm) return;
 
     const selectedTaskId = listItemElm.dataset.id;
-    tasks = toggleTaskStatus(tasks, selectedTaskId);
+    if (!selectedTaskId) return;
+
+    const previousTask = tasks.find((task) => task.id === selectedTaskId);
+    if (!previousTask) return;
+
+    const nextTasks = toggleTaskStatus(tasks, selectedTaskId);
+    const updatedTask = nextTasks.find((task) => task.id === selectedTaskId);
+    tasks = nextTasks;
     saveTasks(tasks);
     render();
+
+    if (updatedTask && previousTask.done !== updatedTask.done) {
+      toastManager.showToast({
+        message: updatedTask.done
+          ? "Task marked complete"
+          : "Task marked active",
+        variant: "success",
+        duration: 2600,
+      });
+    }
   };
 
   const deleteTaskHandler = (deleteButtonElm) => {
@@ -640,9 +925,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!listItemElm) return;
 
     const selectedTaskId = listItemElm.dataset.id;
+    if (!selectedTaskId) return;
+
+    const taskIndex = tasks.findIndex((task) => task.id === selectedTaskId);
+    if (taskIndex === -1) return;
+    const removedTask = tasks[taskIndex];
+
     tasks = deleteTask(tasks, selectedTaskId);
     saveTasks(tasks);
     render();
+    scheduleDeletionUndo([{ task: removedTask, index: taskIndex }]);
   };
 
   const startEditingTask = (taskTextElm) => {
@@ -665,10 +957,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const commitEdit = () => {
       const nextText = inputElm.value.trim();
       if (!nextText) {
-        alert("Task cannot be empty.");
+        inlineFeedback.show(inputElm, "Task cannot be empty.");
         inputElm.focus();
         return;
       }
+
+      inlineFeedback.clear(inputElm);
 
       if (nextText !== originalText) {
         tasks = updateTask(tasks, taskId, {
@@ -676,6 +970,11 @@ document.addEventListener("DOMContentLoaded", () => {
           updatedAt: Date.now(),
         });
         saveTasks(tasks);
+        toastManager.showToast({
+          message: "Task updated",
+          variant: "success",
+          duration: 2800,
+        });
       }
 
       replaceWithTaskText(wrapperElm, nextText);
@@ -686,11 +985,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (event.key === "Enter") inputElm.blur();
       if (event.key === "Escape") {
         inputElm.value = originalText;
+        inlineFeedback.clear(inputElm);
         inputElm.blur();
       }
     });
     inputElm.addEventListener("input", () => {
       inputElm.size = Math.max(1, inputElm.value.length);
+      if (inputElm.value.trim()) inlineFeedback.clear(inputElm);
     });
 
     taskTextElm.replaceWith(wrapperElm);
@@ -850,21 +1151,41 @@ document.addEventListener("DOMContentLoaded", () => {
   bulkCompleteButtonElm.addEventListener("click", () => {
     if (selectedTaskIds.size === 0) return;
 
-    tasks = tasks.map((task) => {
+    let updatedCount = 0;
+    const nextTasks = tasks.map((task) => {
       if (!selectedTaskIds.has(task.id) || task.done) return task;
+      updatedCount += 1;
       return { ...task, done: true, updatedAt: Date.now() };
     });
+    if (updatedCount === 0) return;
+
+    tasks = nextTasks;
     saveTasks(tasks);
     render();
+    toastManager.showToast({
+      message:
+        updatedCount === 1
+          ? "Task marked complete"
+          : `${updatedCount} tasks marked complete`,
+      variant: "success",
+      duration: 2800,
+    });
   });
 
   bulkDeleteButtonElm.addEventListener("click", () => {
     if (selectedTaskIds.size === 0) return;
 
     const idsToDelete = new Set(selectedTaskIds);
+    const entries = [];
+    tasks.forEach((task, index) => {
+      if (idsToDelete.has(task.id)) entries.push({ task, index });
+    });
+    if (entries.length === 0) return;
+
     tasks = tasks.filter((task) => !idsToDelete.has(task.id));
     saveTasks(tasks);
     render();
+    scheduleDeletionUndo(entries);
   });
 
   filterListElm.addEventListener("change", (e) => {
