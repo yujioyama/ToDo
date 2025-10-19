@@ -94,9 +94,16 @@ const applyTags = (tagsElm, tags) => {
  * @param {import("./model.js").Task} task Task record to render.
  * @param {HTMLElement} taskListElm List container element.
  * @param {Set<string>} [selectedTaskIds] Collection of task ids that are currently selected.
+ * @param {boolean} [dragEnabled=false] Whether drag-and-drop reordering is active.
  * @returns {void}
  */
-const insertTask = (taskTemplate, task, taskListElm, selectedTaskIds) => {
+const insertTask = (
+  taskTemplate,
+  task,
+  taskListElm,
+  selectedTaskIds,
+  dragEnabled = false
+) => {
   const node = taskTemplate.content.cloneNode(true);
   const listItemElm = node.querySelector(".js-todo-list-item");
   const taskTextElm = node.querySelector(".js-task-text");
@@ -107,6 +114,8 @@ const insertTask = (taskTemplate, task, taskListElm, selectedTaskIds) => {
   const taskSelectElm = node.querySelector(".js-task-select");
 
   listItemElm.dataset.id = task.id;
+  listItemElm.draggable = Boolean(dragEnabled);
+  listItemElm.classList.toggle("is-draggable", Boolean(dragEnabled));
   taskTextElm.textContent = task.text;
   applyStatus(taskStatusTrigger, task.done);
   if (taskSelectElm) {
@@ -319,6 +328,7 @@ const applyPriority = (priorityElm, priority) => {
  * @param {"none" | "dueDate" | "priority"} sort Active sort key.
  * @param {string[]} tagFilter Tags that must appear on each task.
  * @param {Set<string>} selectedTaskIds Currently selected task identifiers.
+ * @param {boolean} dragEnabled Whether drag-and-drop is active.
  * @returns {import("./model.js").Task[]} Tasks rendered to the DOM.
  */
 const renderTaskList = (
@@ -329,7 +339,8 @@ const renderTaskList = (
   searchTerm,
   sort,
   tagFilter,
-  selectedTaskIds
+  selectedTaskIds,
+  dragEnabled
 ) => {
   taskListElm.innerHTML = "";
   const filteredTasks = getFilteredTasks(tasks, filter);
@@ -341,7 +352,13 @@ const renderTaskList = (
   );
   const visibleTasks = getSortedTasks(tagFilteredTasks, sort);
   for (const task of visibleTasks)
-    insertTask(taskTemplate, task, taskListElm, selectedTaskIds);
+    insertTask(
+      taskTemplate,
+      task,
+      taskListElm,
+      selectedTaskIds,
+      dragEnabled
+    );
   return visibleTasks;
 };
 
@@ -413,6 +430,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentTagFilter = normalizeTags(savedTagFilter ?? []);
   const selectedTaskIds = new Set();
   let visibleTaskIds = [];
+  let isDragEnabled = false;
+  let draggedTaskId = null;
+  let dragSourceElm = null;
+  let dragOverTaskElm = null;
 
   const syncFilterControls = () => {
     const targetInput = filterListElm.querySelector(
@@ -470,6 +491,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const clearDragVisuals = () => {
+    if (dragSourceElm) dragSourceElm.classList.remove("is-dragging");
+    if (dragOverTaskElm) dragOverTaskElm.classList.remove("is-drag-over");
+    dragSourceElm = null;
+    dragOverTaskElm = null;
+  };
+
+  const resetDragState = () => {
+    draggedTaskId = null;
+    clearDragVisuals();
+  };
+
   let currentSearchTerm = "";
   let currentTheme =
     loadTheme() ??
@@ -523,6 +556,7 @@ document.addEventListener("DOMContentLoaded", () => {
      * Render pipeline orchestrates filtering/tag matching/sorting, selection syncing, and metrics refresh.
      */
     pruneSelectedTasks();
+    isDragEnabled = currentSort === "none";
     const visibleTasks = renderTaskList(
       taskTemplate,
       taskListElm,
@@ -531,7 +565,8 @@ document.addEventListener("DOMContentLoaded", () => {
       currentSearchTerm,
       currentSort,
       currentTagFilter,
-      selectedTaskIds
+      selectedTaskIds,
+      isDragEnabled
     );
     visibleTaskIds = visibleTasks.map((task) => task.id);
     updateBulkActionControls();
@@ -661,6 +696,110 @@ document.addEventListener("DOMContentLoaded", () => {
     taskTextElm.replaceWith(wrapperElm);
     inputElm.focus();
   };
+
+  taskListElm.addEventListener("dragstart", (event) => {
+    if (!isDragEnabled) {
+      event.preventDefault();
+      return;
+    }
+
+    const listItemElm = event.target.closest?.(".js-todo-list-item");
+    if (!listItemElm || !listItemElm.draggable) return;
+
+    const taskId = listItemElm.dataset.id;
+    if (!taskId) {
+      event.preventDefault();
+      return;
+    }
+
+    draggedTaskId = taskId;
+    dragSourceElm = listItemElm;
+    listItemElm.classList.add("is-dragging");
+
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", taskId);
+    }
+  });
+
+  taskListElm.addEventListener("dragenter", (event) => {
+    if (!isDragEnabled || !draggedTaskId) return;
+    const listItemElm = event.target.closest?.(".js-todo-list-item");
+    if (!listItemElm || listItemElm.dataset.id === draggedTaskId) return;
+
+    if (dragOverTaskElm && dragOverTaskElm !== listItemElm) {
+      dragOverTaskElm.classList.remove("is-drag-over");
+    }
+    dragOverTaskElm = listItemElm;
+    dragOverTaskElm.classList.add("is-drag-over");
+  });
+
+  taskListElm.addEventListener("dragover", (event) => {
+    if (!isDragEnabled || !draggedTaskId) return;
+    event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+  });
+
+  taskListElm.addEventListener("dragleave", (event) => {
+    if (!isDragEnabled || !draggedTaskId) return;
+    const listItemElm = event.target.closest?.(".js-todo-list-item");
+    if (!listItemElm || listItemElm !== dragOverTaskElm) return;
+
+    const relatedItem = event.relatedTarget?.closest?.(".js-todo-list-item");
+    if (relatedItem === listItemElm) return;
+    listItemElm.classList.remove("is-drag-over");
+    if (dragOverTaskElm === listItemElm) dragOverTaskElm = null;
+  });
+
+  taskListElm.addEventListener("drop", (event) => {
+    if (!isDragEnabled || !draggedTaskId) return;
+    event.preventDefault();
+
+    const sourceIndex = tasks.findIndex((task) => task.id === draggedTaskId);
+    if (sourceIndex === -1) {
+      resetDragState();
+      return;
+    }
+
+    const targetItemElm = event.target.closest?.(".js-todo-list-item");
+
+    if (targetItemElm && targetItemElm.dataset.id === draggedTaskId) {
+      resetDragState();
+      return;
+    }
+
+    let insertIndex = tasks.length;
+
+    if (targetItemElm) {
+      const targetId = targetItemElm.dataset.id;
+      const targetIndex = tasks.findIndex((task) => task.id === targetId);
+      if (targetIndex === -1) {
+        resetDragState();
+        return;
+      }
+
+      const targetRect = targetItemElm.getBoundingClientRect();
+      const shouldPlaceAfter = event.clientY > targetRect.top + targetRect.height / 2;
+      let normalizedTargetIndex = targetIndex;
+      if (sourceIndex < targetIndex) normalizedTargetIndex -= 1;
+      insertIndex = shouldPlaceAfter
+        ? normalizedTargetIndex + 1
+        : normalizedTargetIndex;
+      if (insertIndex < 0) insertIndex = 0;
+    }
+    if (insertIndex > tasks.length) insertIndex = tasks.length;
+
+    const [movedTask] = tasks.splice(sourceIndex, 1);
+    tasks.splice(insertIndex, 0, movedTask);
+    saveTasks(tasks);
+
+    resetDragState();
+    render();
+  });
+
+  taskListElm.addEventListener("dragend", () => {
+    resetDragState();
+  });
 
   taskListElm.addEventListener("change", (e) => {
     const selectCheckboxElm = e.target.closest?.(".js-task-select");

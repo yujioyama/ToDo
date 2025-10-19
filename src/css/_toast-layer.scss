@@ -1,0 +1,10 @@
+.toast-layer {
+  position: fixed;
+  right: var(--gap-md);
+  bottom: var(--gap-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  pointer-events: none;
+  z-index: 10;
+}

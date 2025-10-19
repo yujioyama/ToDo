@@ -20,6 +20,20 @@
       box-shadow: var(--shadow-soft);
       border-color: rgba(37, 99, 235, 0.35);
     }
+
+    &.is-draggable {
+      cursor: grab;
+    }
+
+    &.is-dragging {
+      cursor: grabbing;
+      opacity: 0.7;
+    }
+
+    &.is-drag-over {
+      border-color: var(--color-accent);
+      box-shadow: var(--shadow-soft);
+    }
   }
 
   &__left {
@@ -94,6 +108,12 @@
       color: #ef4444;
       transform: translateY(-1px);
     }
+  }
+
+  &__item.is-draggable &__select,
+  &__item.is-draggable &__status,
+  &__item.is-draggable &__delete {
+    cursor: pointer;
   }
 
   &__editWrap {
