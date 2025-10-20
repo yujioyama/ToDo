@@ -1,19 +1,48 @@
+/**
+ * @fileoverview Test suite for UI feedback components (toasts and inline validation).
+ * 
+ * Tests the toast notification system and inline form validation feedback,
+ * including DOM manipulation, timer handling, and event interactions.
+ * 
+ * @requires vitest
+ * @requires jsdom
+ */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   createToastManager,
   createInlineFeedback,
 } from "../src/js/ui-feedback.js";
 
+/**
+ * Test suite for the toast notification manager.
+ * Covers rendering, lifecycle, variants, actions, and edge cases.
+ */
 describe("createToastManager", () => {
+  /**
+   * Setup before each test: enable fake timers and reset DOM.
+   * Fake timers allow us to control setTimeout/setInterval behavior.
+   */
   beforeEach(() => {
     vi.useFakeTimers();
     document.body.innerHTML = "";
   });
 
+  /**
+   * Cleanup after each test: restore real timers.
+   */
   afterEach(() => {
     vi.useRealTimers();
   });
 
+  /**
+   * Test: Toast element is created and becomes visible after animation frame.
+   * 
+   * Verifies:
+   * - Toast element is added to DOM
+   * - Correct variant CSS class is applied
+   * - Visibility class is added on next animation frame
+   */
   it("renders a toast and applies the visible class on the next frame", async () => {
     const layer = document.createElement("div");
     document.body.appendChild(layer);
@@ -30,6 +59,15 @@ describe("createToastManager", () => {
     expect(toast?.classList.contains("is-visible")).toBe(true);
   });
 
+  /**
+   * Test: Toast action button calls handler and dismisses toast.
+   * 
+   * Verifies:
+   * - Action button is rendered with correct label
+   * - Handler function is called when button is clicked
+   * - Toast is removed from DOM after dismiss
+   * - Dismiss function can be called multiple times safely
+   */
   it("invokes the action handler and dismisses the toast", () => {
     const layer = document.createElement("div");
     document.body.appendChild(layer);
@@ -63,7 +101,16 @@ describe("createToastManager", () => {
     expect(() => dismiss()).not.toThrow();
   });
 
-  // NEW TEST: Auto-dismiss functionality
+  /**
+   * Test: Toast automatically dismisses after specified duration.
+   * 
+   * Uses fake timers to simulate time passage without actual waiting.
+   * 
+   * Verifies:
+   * - Toast exists initially
+   * - After duration, dismiss animation is triggered
+   * - Toast is removed from DOM after transition
+   */
   it("auto-dismisses toast after the specified duration", () => {
     // ARRANGE: Create layer and manager
     const layer = document.createElement("div");
@@ -89,7 +136,11 @@ describe("createToastManager", () => {
     expect(layer.querySelector(".toast")).toBeNull();
   });
 
-  // NEW TEST: Multiple toast variants
+  /**
+   * Test: All toast variants (info, success, error) render with correct CSS classes.
+   * 
+   * Ensures visual variants are properly applied for different notification types.
+   */
   it("renders toasts with different variants", () => {
     const layer = document.createElement("div");
     document.body.appendChild(layer);
@@ -110,7 +161,12 @@ describe("createToastManager", () => {
     expect(layer.querySelector(".toast--error")).toBeTruthy();
   });
 
-  // NEW TEST: Handle invalid layer element
+  /**
+   * Test: Toast manager gracefully handles invalid layer element.
+   * 
+   * Edge case: Ensures the manager doesn't crash when passed null/invalid element.
+   * Returns no-op functions that can be called safely without errors.
+   */
   it("returns a no-op function when layer is not an HTMLElement", () => {
     // Pass null instead of an element
     const { showToast } = createToastManager(null);
@@ -121,7 +177,12 @@ describe("createToastManager", () => {
     expect(() => dismiss()).not.toThrow();
   });
 
-  // NEW TEST: Manual dismiss before auto-dismiss
+  /**
+   * Test: Manual dismiss cancels auto-dismiss timer.
+   * 
+   * Verifies that calling the dismiss function immediately removes the toast
+   * and prevents the auto-dismiss timer from firing later.
+   */
   it("allows manual dismissal before auto-dismiss timer fires", () => {
     const layer = document.createElement("div");
     document.body.appendChild(layer);
@@ -144,7 +205,11 @@ describe("createToastManager", () => {
     expect(layer.querySelector(".toast")).toBeNull();
   });
 
-  // NEW TEST: Toast without action button
+  /**
+   * Test: Toast renders without action button when no action is provided.
+   * 
+   * Ensures the action button is optional and doesn't render when not needed.
+   */
   it("renders toast without action button when action is not provided", () => {
     const layer = document.createElement("div");
     document.body.appendChild(layer);
@@ -160,7 +225,16 @@ describe("createToastManager", () => {
   });
 });
 
+/**
+ * Test suite for inline validation feedback.
+ * 
+ * Tests form input validation messages and error state styling
+ * for different container types (input-text, todo-list edit).
+ */
 describe("createInlineFeedback", () => {
+  /**
+   * Setup: Reset DOM before each test for clean state.
+   */
   beforeEach(() => {
     document.body.innerHTML = "";
   });
@@ -190,6 +264,12 @@ describe("createInlineFeedback", () => {
     expect(input.hasAttribute("aria-invalid")).toBe(false);
   });
 
+  /**
+   * Test: Feedback system handles unknown container types gracefully.
+   * 
+   * Edge case: When input is not inside a recognized container,
+   * show/clear operations should not throw errors.
+   */
   it("falls back gracefully when container metadata is missing", () => {
     const wrapper = document.createElement("div");
     const input = document.createElement("input");
@@ -203,7 +283,12 @@ describe("createInlineFeedback", () => {
     expect(() => feedback.clear(input)).not.toThrow();
   });
 
-  // NEW TEST: Test with todo-list edit wrap container
+  /**
+   * Test: Feedback works with todo-list edit wrapper containers.
+   * 
+   * Verifies the feedback system supports the inline editing UI pattern
+   * used in the todo list, with different CSS classes than standard inputs.
+   */
   it("shows and clears validation feedback for todo-list__editWrap containers", () => {
     // ARRANGE: Create the edit wrapper structure
     const wrapper = document.createElement("div");
@@ -232,7 +317,12 @@ describe("createInlineFeedback", () => {
     expect(input.hasAttribute("aria-invalid")).toBe(false);
   });
 
-  // NEW TEST: Reusing existing feedback element
+  /**
+   * Test: Multiple errors reuse the same feedback element.
+   * 
+   * Performance optimization: Instead of creating new elements,
+   * the feedback system updates the existing message element.
+   */
   it("reuses existing feedback element when showing multiple errors", () => {
     const wrapper = document.createElement("div");
     wrapper.className = "input-text";

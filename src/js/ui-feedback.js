@@ -1,4 +1,14 @@
 /**
+ * @fileoverview UI feedback components for user interactions.
+ * 
+ * Provides toast notifications and inline form validation feedback.
+ * These components enhance UX by giving immediate visual feedback
+ * for user actions and form errors.
+ * 
+ * @module ui-feedback
+ */
+
+/**
  * Create a toast manager that renders lightweight notifications inside the provided layer.
  *
  * @param {HTMLElement | null} layerElm Toast container element.

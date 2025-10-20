@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Main application controller connecting UI, model, and storage.
+ * 
+ * This is the orchestration layer that handles:
+ * - DOM event listeners and user interactions
+ * - Task rendering and filtering
+ * - UI state management (theme, filters, sorting)
+ * - Drag-and-drop reordering
+ * - Bulk operations (select all, bulk complete/delete)
+ * - Undo functionality for destructive actions
+ * 
+ * @module app
+ */
+
 // app.js
 // Connects UI (DOM) with the task model and storage.
 // Handles user events, updates the DOM, and delegates data logic to model/store.

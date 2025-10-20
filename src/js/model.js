@@ -1,13 +1,23 @@
+/**
+ * @fileoverview Pure functions for task management (CRUD operations).
+ * 
+ * This module contains immutable functions that operate on task data.
+ * Functions never modify input arrays - they return new arrays instead.
+ * This makes the code predictable, testable, and bug-free.
+ * 
+ * @module model
+ */
+
 // model.js
 // Defines pure functions for managing task data (add, delete, toggle).
-// This module is independent of DOM and storage, so it’s easy to test.
+// This module is independent of DOM and storage, so it's easy to test.
 
 /**
  * @typedef {Object} Task
  * @property {string} id Unique identifier for the task.
  * @property {string} text Task description.
  * @property {boolean} done Completion state.
- * @property {number} createdAt C timestamp when the task was created.
+ * @property {number} createdAt Epoch timestamp when the task was created.
  * @property {string | null} [dueDate] ISO-8601 date string representing the due date.
  * @property {"low" | "medium" | "high" | null} priority Priority label, optional.
  * @property {string[]} tags Associated tags for grouping/filtering.

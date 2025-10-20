@@ -1,11 +1,26 @@
+/**
+ * @fileoverview LocalStorage persistence layer for the todo application.
+ * 
+ * Handles all browser storage operations including tasks, UI preferences,
+ * and user settings. Provides a clean API that abstracts localStorage details
+ * and includes robust error handling for corrupted data.
+ * 
+ * @module store
+ */
+
 // store.js
 // Handles persistence: load and save tasks to localStorage.
-// This module abstracts browser storage so other files don’t deal with it directly.
+// This module abstracts browser storage so other files don't deal with it directly.
 
+/** @constant {string} localStorage key for task list */
 const LIST_ITEMS_LOCAL_STORAGE = "listItems";
+/** @constant {string} localStorage key for active filter */
 const FILTER_LOCAL_STORAGE = "listFilter";
+/** @constant {string} localStorage key for sort preference */
 const SORT_LOCAL_STORAGE = "listSort";
+/** @constant {string} localStorage key for tag filter */
 const TAG_FILTER_LOCAL_STORAGE = "tagFilter";
+/** @constant {string} localStorage key for theme preference */
 const THEME_LOCAL_STORAGE = "uiTheme";
 
 /**
