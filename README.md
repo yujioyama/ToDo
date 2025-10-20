@@ -4,7 +4,9 @@ A modern, feature-rich todo application built with vanilla JavaScript, showcasin
 
 ## 🚀 Live Demo
 
-[View Live Demo](https://your-username.github.io/todo-app) *(Add your deployed URL here)*
+**[View Live Demo](https://yujioyama.github.io/ToDo/)** 
+
+Try it now! Test all features including dark/light themes, task management, and filtering.
 
 ## ✨ Features
 
