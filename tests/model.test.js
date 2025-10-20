@@ -64,13 +64,10 @@ describe("model.js - Task Management", () => {
     });
 
     it("adds task with due date, priority, and tags", () => {
-      const result = addTask(
-        [],
-        "Important meeting",
-        "2025-11-15",
-        "high",
-        ["work", "urgent"]
-      );
+      const result = addTask([], "Important meeting", "2025-11-15", "high", [
+        "work",
+        "urgent",
+      ]);
 
       expect(result[0].dueDate).toBe("2025-11-15");
       expect(result[0].priority).toBe("high");
@@ -83,13 +80,14 @@ describe("model.js - Task Management", () => {
     });
 
     it("filters out invalid tags (empty or non-string)", () => {
-      const result = addTask(
-        [],
-        "Task",
+      const result = addTask([], "Task", null, null, [
+        "valid",
+        "",
+        "  ",
+        123,
         null,
-        null,
-        ["valid", "", "  ", 123, null, "another-valid"]
-      );
+        "another-valid",
+      ]);
 
       // Only valid strings with content should remain
       expect(result[0].tags).toEqual(["valid", "another-valid"]);

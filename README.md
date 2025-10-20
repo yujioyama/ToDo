@@ -21,7 +21,7 @@ This project includes comprehensive automated tests using **Vitest**.
 - **Coverage**: 51 tests across 3 test suites
 - **Categories**:
   - UI Feedback (toasts, validation) - 11 tests
-  - Task Management (business logic) - 20 tests  
+  - Task Management (business logic) - 20 tests
   - Data Persistence (localStorage) - 20 tests
 
 ### Running Tests

@@ -74,7 +74,7 @@ describe("createToastManager", () => {
     showToast({ message: "Auto-hide me", duration: 3000 });
 
     const toast = layer.querySelector(".toast");
-    
+
     // ASSERT: Toast exists initially
     expect(toast).toBeTruthy();
 
@@ -250,7 +250,7 @@ describe("createInlineFeedback", () => {
     // Show second error (should reuse same element)
     feedback.show(input, "Second error");
     const secondMessage = wrapper.querySelector(".input-text__feedback");
-    
+
     // Should be the same element, just updated content
     expect(secondMessage).toBe(firstMessage);
     expect(secondMessage?.textContent).toBe("Second error");
