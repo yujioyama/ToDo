@@ -1,10 +1,10 @@
 /**
  * @fileoverview UI feedback components for user interactions.
- * 
+ *
  * Provides toast notifications and inline form validation feedback.
  * These components enhance UX by giving immediate visual feedback
  * for user actions and form errors.
- * 
+ *
  * @module ui-feedback
  */
 
@@ -121,7 +121,8 @@ export const createInlineFeedback = () => {
    */
   const findContainer = (inputElm) => {
     return (
-      inputElm.closest(".input-text") ?? inputElm.closest(".todo-list__editWrap")
+      inputElm.closest(".input-text") ??
+      inputElm.closest(".todo-list__editWrap")
     );
   };
 

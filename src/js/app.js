@@ -1,6 +1,6 @@
 /**
  * @fileoverview Main application controller connecting UI, model, and storage.
- * 
+ *
  * This is the orchestration layer that handles:
  * - DOM event listeners and user interactions
  * - Task rendering and filtering
@@ -8,7 +8,7 @@
  * - Drag-and-drop reordering
  * - Bulk operations (select all, bulk complete/delete)
  * - Undo functionality for destructive actions
- * 
+ *
  * @module app
  */
 
@@ -83,7 +83,6 @@ const parseTagsInput = (inputValue) => {
   return normalizeTags(rawTags);
 };
 
-
 /**
  * Update the tag display element for a task.
  *
@@ -135,7 +134,9 @@ const insertTask = (
   taskTextElm.textContent = task.text;
   applyStatus(taskStatusTrigger, task.done);
   if (taskSelectElm) {
-    const isSelected = selectedTaskIds?.has ? selectedTaskIds.has(task.id) : false;
+    const isSelected = selectedTaskIds?.has
+      ? selectedTaskIds.has(task.id)
+      : false;
     taskSelectElm.checked = isSelected;
   }
   if (taskDueElm) applyDueDate(taskDueElm, task.dueDate);
@@ -212,7 +213,9 @@ const matchesTagFilter = (task, filterTags) => {
   if (taskTags.length === 0) return false;
 
   const taskTagSet = new Set(taskTags);
-  return filterTags.every((filterTag) => taskTagSet.has(filterTag.toLowerCase()));
+  return filterTags.every((filterTag) =>
+    taskTagSet.has(filterTag.toLowerCase())
+  );
 };
 
 /**
@@ -245,9 +248,7 @@ const getSortedTasks = (tasks, sort) => {
     const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
     const toRank = (task) => {
       const key =
-        typeof task?.priority === "string"
-          ? task.priority.toLowerCase()
-          : null;
+        typeof task?.priority === "string" ? task.priority.toLowerCase() : null;
       return PRIORITY_ORDER[key] ?? 3;
     };
     sortedTasks.sort((a, b) => {
@@ -368,13 +369,7 @@ const renderTaskList = (
   );
   const visibleTasks = getSortedTasks(tagFilteredTasks, sort);
   for (const task of visibleTasks)
-    insertTask(
-      taskTemplate,
-      task,
-      taskListElm,
-      selectedTaskIds,
-      dragEnabled
-    );
+    insertTask(taskTemplate, task, taskListElm, selectedTaskIds, dragEnabled);
   return visibleTasks;
 };
 
@@ -514,8 +509,7 @@ document.addEventListener("DOMContentLoaded", () => {
           clearUndoState();
           restoreDeletedEntries(entries);
           toastManager.showToast({
-            message:
-              count === 1 ? "Task restored" : `${count} tasks restored`,
+            message: count === 1 ? "Task restored" : `${count} tasks restored`,
             variant: "success",
             duration: 3200,
           });
@@ -617,7 +611,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const total = allTasks.length;
     const completed = allTasks.filter((task) => task.done).length;
     const active = total - completed;
-    const completionRate = total === 0 ? 0 : Math.round((completed / total) * 100);
+    const completionRate =
+      total === 0 ? 0 : Math.round((completed / total) * 100);
 
     metricTotalElm.textContent = String(total);
     metricCompleteElm.textContent = String(completed);
@@ -637,7 +632,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.remove("theme-light", "theme-dark");
     document.body.classList.add(currentTheme, "theme-transition");
     themeToggleButtonElm.textContent =
-      currentTheme === "theme-dark" ? "Switch to light mode" : "Switch to dark mode";
+      currentTheme === "theme-dark"
+        ? "Switch to light mode"
+        : "Switch to dark mode";
   };
 
   const render = () => {
@@ -908,7 +905,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const targetRect = targetItemElm.getBoundingClientRect();
-      const shouldPlaceAfter = event.clientY > targetRect.top + targetRect.height / 2;
+      const shouldPlaceAfter =
+        event.clientY > targetRect.top + targetRect.height / 2;
       let normalizedTargetIndex = targetIndex;
       if (sourceIndex < targetIndex) normalizedTargetIndex -= 1;
       insertIndex = shouldPlaceAfter
@@ -1052,7 +1050,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   themeToggleButtonElm.addEventListener("click", () => {
-    const nextTheme = currentTheme === "theme-dark" ? "theme-light" : "theme-dark";
+    const nextTheme =
+      currentTheme === "theme-dark" ? "theme-light" : "theme-dark";
     applyTheme(nextTheme);
   });
 });

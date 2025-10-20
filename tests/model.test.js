@@ -1,9 +1,9 @@
 /**
  * @fileoverview Test suite for task management business logic.
- * 
+ *
  * Tests pure functions that handle task CRUD operations (Create, Read, Update, Delete).
  * These functions are immutable - they return new arrays rather than modifying originals.
- * 
+ *
  * @requires vitest
  */
 
@@ -17,7 +17,7 @@ import {
 
 /**
  * Test suite for task management operations.
- * 
+ *
  * Covers all CRUD operations and ensures immutability (functional programming).
  * Each test uses fresh sample data to maintain test isolation.
  */
@@ -55,14 +55,14 @@ describe("model.js - Task Management", () => {
 
   /**
    * Test suite for addTask function.
-   * 
+   *
    * Verifies task creation with various parameter combinations,
    * data validation, and immutability.
    */
   describe("addTask", () => {
     /**
      * Test: Adding first task to empty list.
-     * 
+     *
      * Ensures:
      * - Task object is properly created
      * - Required fields (id, text, done, createdAt) are populated
@@ -85,7 +85,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Immutability - original array is not modified.
-     * 
+     *
      * Critical for functional programming: Functions should return new arrays
      * rather than mutating the input. This prevents bugs from shared state.
      */
@@ -105,7 +105,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Task creation with all optional parameters.
-     * 
+     *
      * Verifies dueDate, priority, and tags are properly stored
      * when provided during task creation.
      */
@@ -122,7 +122,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Input sanitization - whitespace trimming.
-     * 
+     *
      * Ensures user input is cleaned up to prevent accidental
      * leading/trailing spaces in task text.
      */
@@ -133,7 +133,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Tag validation - filters invalid tags.
-     * 
+     *
      * Defensive programming: Handles array with mixed invalid values
      * (empty strings, whitespace, non-strings, null). Only valid
      * string tags with content should be kept.
@@ -154,7 +154,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Optional parameters default handling.
-     * 
+     *
      * When optional params are null/undefined, they should be
      * stored as null (dueDate, priority) or empty array (tags).
      */
@@ -169,14 +169,14 @@ describe("model.js - Task Management", () => {
 
   /**
    * Test suite for deleteTask function.
-   * 
+   *
    * Tests task removal by ID, including edge cases like
    * non-existent IDs and immutability verification.
    */
   describe("deleteTask", () => {
     /**
      * Test: Successful task deletion by ID.
-     * 
+     *
      * Verifies the task is removed and other tasks remain.
      */
     it("removes a task by ID", () => {
@@ -190,7 +190,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Graceful handling of non-existent IDs.
-     * 
+     *
      * Edge case: Attempting to delete a task that doesn't exist
      * should return the list unchanged rather than throwing error.
      */
@@ -203,7 +203,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Immutability check for deleteTask.
-     * 
+     *
      * Original array must remain unchanged after deletion operation.
      */
     it("does not mutate the original list", () => {
@@ -218,14 +218,14 @@ describe("model.js - Task Management", () => {
 
   /**
    * Test suite for toggleTaskStatus function.
-   * 
+   *
    * Tests the done/not done toggle functionality,
    * including timestamp updates and immutability.
    */
   describe("toggleTaskStatus", () => {
     /**
      * Test: Completing an incomplete task.
-     * 
+     *
      * Verifies done flag changes to true and updatedAt timestamp is set.
      */
     it("marks an incomplete task as done", () => {
@@ -239,7 +239,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Uncompleting a completed task.
-     * 
+     *
      * Toggle works both ways: done → not done, and also updates timestamp.
      */
     it("marks a completed task as not done", () => {
@@ -253,7 +253,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Toggle operation is isolated to target task.
-     * 
+     *
      * Other tasks in the list should remain completely unchanged.
      */
     it("does not affect other tasks in the list", () => {
@@ -266,7 +266,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Toggle with non-existent ID is a no-op.
-     * 
+     *
      * Edge case: Returns unchanged list when ID not found.
      */
     it("returns unchanged list if ID does not exist", () => {
@@ -290,14 +290,14 @@ describe("model.js - Task Management", () => {
 
   /**
    * Test suite for updateTask function.
-   * 
+   *
    * Tests partial updates to task properties. Unlike toggle which
    * only affects 'done', this allows updating any field(s).
    */
   describe("updateTask", () => {
     /**
      * Test: Update a single field (text).
-     * 
+     *
      * Demonstrates partial update - only specified fields change.
      */
     it("updates task text", () => {
@@ -311,7 +311,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Update multiple fields in one operation.
-     * 
+     *
      * Verifies that the fields object can contain multiple properties
      * and all are applied to the target task.
      */
@@ -332,7 +332,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Non-updated fields are preserved.
-     * 
+     *
      * Important: When updating one field, all other fields
      * must remain exactly as they were.
      */
@@ -348,7 +348,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Update is isolated to target task.
-     * 
+     *
      * Other tasks must not be affected by the update operation.
      */
     it("does not affect other tasks", () => {
@@ -361,7 +361,7 @@ describe("model.js - Task Management", () => {
 
     /**
      * Test: Update with non-existent ID returns unchanged list.
-     * 
+     *
      * Edge case: Graceful handling when task ID not found.
      */
     it("returns unchanged list if ID does not exist", () => {

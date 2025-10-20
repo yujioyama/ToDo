@@ -1,9 +1,9 @@
 /**
  * @fileoverview Test suite for localStorage persistence layer.
- * 
+ *
  * Tests all storage operations: tasks, filters, sort preferences, tags, and themes.
  * Includes error handling for corrupted data and quota exceeded scenarios.
- * 
+ *
  * @requires vitest
  * @requires jsdom - Provides localStorage mock
  */
@@ -24,7 +24,7 @@ import {
 
 /**
  * Test suite for localStorage operations.
- * 
+ *
  * Tests data persistence for tasks, UI state (filters, sorting),
  * and user preferences (theme). Ensures robust error handling.
  */
@@ -47,14 +47,14 @@ describe("store.js - LocalStorage Management", () => {
 
   /**
    * Test suite for task persistence operations.
-   * 
+   *
    * Tests serialization/deserialization of task objects to/from localStorage,
    * including complex nested data and error recovery.
    */
   describe("Tasks Storage", () => {
     /**
      * Test: Round-trip save and load tasks.
-     * 
+     *
      * Verifies tasks can be saved to localStorage and loaded back
      * with all properties intact (JSON serialization round-trip).
      */
@@ -82,7 +82,7 @@ describe("store.js - LocalStorage Management", () => {
 
     /**
      * Test: Loading when no data exists returns empty array.
-     * 
+     *
      * Default state: First-time users should get an empty array,
      * not null or undefined, to avoid type checking everywhere.
      */
@@ -94,7 +94,7 @@ describe("store.js - LocalStorage Management", () => {
 
     /**
      * Test: Graceful degradation with corrupted localStorage data.
-     * 
+     *
      * If localStorage contains invalid JSON (corruption, manual edit),
      * the app should recover gracefully instead of crashing.
      * Returns empty array as fallback.
@@ -110,7 +110,7 @@ describe("store.js - LocalStorage Management", () => {
 
     /**
      * Test: Complex task objects with all optional fields.
-     * 
+     *
      * Ensures serialization handles tasks with dueDate, priority,
      * tags array, and updatedAt timestamp - no data loss.
      */
@@ -138,14 +138,14 @@ describe("store.js - LocalStorage Management", () => {
 
   /**
    * Test suite for filter preference storage.
-   * 
+   *
    * Filter state (all/active/done) needs to persist across sessions
    * so users return to their preferred view.
    */
   describe("Filter Storage", () => {
     /**
      * Test: All filter types can be saved and loaded.
-     * 
+     *
      * Tests each valid filter value: "all", "active", "done".
      */
     it("saves and loads filter state", () => {
@@ -161,7 +161,7 @@ describe("store.js - LocalStorage Management", () => {
 
     /**
      * Test: Default state when no filter is saved.
-     * 
+     *
      * Returns null so the app can use its own default logic.
      */
     it("returns null when no filter is stored", () => {
@@ -182,7 +182,7 @@ describe("store.js - LocalStorage Management", () => {
 
   /**
    * Test suite for sort preference storage.
-   * 
+   *
    * Sort order (none/dueDate/priority) persists so users maintain
    * their preferred task organization across sessions.
    */
@@ -211,7 +211,7 @@ describe("store.js - LocalStorage Management", () => {
 
   /**
    * Test suite for tag filter storage.
-   * 
+   *
    * Tag filters are arrays of strings that need JSON serialization.
    * More complex than simple string storage.
    */
@@ -247,7 +247,7 @@ describe("store.js - LocalStorage Management", () => {
 
     /**
      * Test: Invalid JSON in tagFilter key returns null.
-     * 
+     *
      * Defensive: If localStorage is manually corrupted, don't crash.
      */
     it("handles corrupted tag filter data gracefully", () => {
@@ -258,7 +258,7 @@ describe("store.js - LocalStorage Management", () => {
 
     /**
      * Test: Type validation - rejects non-array data.
-     * 
+     *
      * Even if JSON is valid, if it's not an array, return null.
      * Prevents type errors in the app.
      */
@@ -272,7 +272,7 @@ describe("store.js - LocalStorage Management", () => {
 
   /**
    * Test suite for theme preference storage.
-   * 
+   *
    * UI theme (light/dark mode) persists across sessions.
    * Only accepts specific valid theme values for security.
    */
@@ -305,7 +305,7 @@ describe("store.js - LocalStorage Management", () => {
 
     /**
      * Test: Rejects invalid theme values (security).
-     * 
+     *
      * If someone manually edits localStorage to add "theme-purple",
      * reject it and return null. Prevents CSS injection or errors.
      */
@@ -319,14 +319,14 @@ describe("store.js - LocalStorage Management", () => {
 
   /**
    * Test suite for error handling scenarios.
-   * 
+   *
    * Tests edge cases: quota exceeded, corrupted data, and ensures
    * console.error is called for debugging without crashing the app.
    */
   describe("Error Handling", () => {
     /**
      * Test: Handles localStorage quota exceeded gracefully.
-     * 
+     *
      * localStorage has size limits (~5-10MB). When exceeded,
      * save operations should fail gracefully without crashing.
      */
@@ -346,7 +346,7 @@ describe("store.js - LocalStorage Management", () => {
 
     /**
      * Test: Errors are logged to console for debugging.
-     * 
+     *
      * When load operations fail, console.error should be called
      * so developers can debug issues in production.
      */

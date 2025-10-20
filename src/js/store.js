@@ -1,10 +1,10 @@
 /**
  * @fileoverview LocalStorage persistence layer for the todo application.
- * 
+ *
  * Handles all browser storage operations including tasks, UI preferences,
  * and user settings. Provides a clean API that abstracts localStorage details
  * and includes robust error handling for corrupted data.
- * 
+ *
  * @module store
  */
 

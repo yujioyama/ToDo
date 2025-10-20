@@ -1,10 +1,10 @@
 /**
  * @fileoverview Pure functions for task management (CRUD operations).
- * 
+ *
  * This module contains immutable functions that operate on task data.
  * Functions never modify input arrays - they return new arrays instead.
  * This makes the code predictable, testable, and bug-free.
- * 
+ *
  * @module model
  */
 

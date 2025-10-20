@@ -17,7 +17,7 @@ JSDoc is a documentation standard for JavaScript that uses special comment block
 /**
  * This is a JSDoc comment.
  * It describes the code below it.
- * 
+ *
  * @param {string} name - The user's name
  * @returns {string} A greeting message
  */
@@ -35,10 +35,10 @@ Each test file now has a `@fileoverview` comment explaining its purpose:
 ```javascript
 /**
  * @fileoverview Test suite for UI feedback components (toasts and inline validation).
- * 
+ *
  * Tests the toast notification system and inline form validation feedback,
  * including DOM manipulation, timer handling, and event interactions.
- * 
+ *
  * @requires vitest
  * @requires jsdom
  */
@@ -63,6 +63,7 @@ describe("createToastManager", () => {
 ### Individual Test Documentation
 
 Each `it()` test has detailed comments about:
+
 - **What** it's testing
 - **Why** it's important
 - **What** it verifies
@@ -72,7 +73,7 @@ Example:
 ```javascript
 /**
  * Test: Immutability - original array is not modified.
- * 
+ *
  * Critical for functional programming: Functions should return new arrays
  * rather than mutating the input. This prevents bugs from shared state.
  */
@@ -99,10 +100,11 @@ beforeEach(() => {
 ## Key Concepts Documented
 
 ### 1. **Immutability** (model.test.js)
+
 ```javascript
 /**
  * Test: Immutability - original array is not modified.
- * 
+ *
  * Critical for functional programming: Functions should return new arrays
  * rather than mutating the input. This prevents bugs from shared state.
  */
@@ -111,10 +113,11 @@ beforeEach(() => {
 **Learning point**: Modern JavaScript favors immutable data structures.
 
 ### 2. **Error Handling** (store.test.js)
+
 ```javascript
 /**
  * Test: Graceful degradation with corrupted localStorage data.
- * 
+ *
  * If localStorage contains invalid JSON (corruption, manual edit),
  * the app should recover gracefully instead of crashing.
  * Returns empty array as fallback.
@@ -124,6 +127,7 @@ beforeEach(() => {
 **Learning point**: Always handle edge cases and errors gracefully.
 
 ### 3. **Test Isolation** (all files)
+
 ```javascript
 /**
  * Setup: Clear localStorage before each test.
@@ -137,26 +141,28 @@ beforeEach(() => {
 **Learning point**: Each test should be independent and not rely on other tests.
 
 ### 4. **AAA Pattern** (throughout)
+
 Comments explicitly mark the Arrange-Act-Assert pattern:
 
 ```javascript
 it("auto-dismisses toast after the specified duration", () => {
   // ARRANGE: Create layer and manager
   const layer = document.createElement("div");
-  
+
   // ACT: Show toast with 3 second duration
   showToast({ message: "Auto-hide me", duration: 3000 });
-  
+
   // ASSERT: Toast should be removed from DOM
   expect(layer.querySelector(".toast")).toBeNull();
 });
 ```
 
 ### 5. **Edge Cases** (all files)
+
 ```javascript
 /**
  * Test: Graceful handling of non-existent IDs.
- * 
+ *
  * Edge case: Attempting to delete a task that doesn't exist
  * should return the list unchanged rather than throwing error.
  */
@@ -165,10 +171,11 @@ it("auto-dismisses toast after the specified duration", () => {
 **Learning point**: Good tests cover edge cases, not just happy paths.
 
 ### 6. **Security Considerations** (store.test.js)
+
 ```javascript
 /**
  * Test: Rejects invalid theme values (security).
- * 
+ *
  * If someone manually edits localStorage to add "theme-purple",
  * reject it and return null. Prevents CSS injection or errors.
  */
@@ -179,25 +186,33 @@ it("auto-dismisses toast after the specified duration", () => {
 ## Benefits for Your Portfolio
 
 ### 1. **Professionalism**
+
 Well-documented tests show you:
+
 - Write maintainable code
 - Think about future developers (including yourself)
 - Follow industry best practices
 
 ### 2. **Teaching Ability**
+
 If you can document code clearly, you can:
+
 - Explain technical concepts to clients
 - Onboard team members
 - Write better documentation
 
 ### 3. **Attention to Detail**
+
 Comprehensive documentation shows:
+
 - You care about code quality
 - You understand what you're testing
 - You think beyond "just making it work"
 
 ### 4. **Interview Preparation**
+
 These comments help you:
+
 - Remember what each test does
 - Explain your testing strategy
 - Discuss testing best practices
@@ -205,11 +220,13 @@ These comments help you:
 ## How to Use This Documentation
 
 ### When Reading Tests
+
 1. Start with the `@fileoverview` to understand the file's purpose
 2. Read the test suite description to understand what's being tested
 3. Read individual test comments to understand specific scenarios
 
 ### When Writing New Tests
+
 1. Add a `@fileoverview` if creating a new test file
 2. Document each `describe()` block with its purpose
 3. Add comments to individual tests explaining:
@@ -218,7 +235,9 @@ These comments help you:
    - What edge cases are covered
 
 ### When Showing Your Code
+
 Point out:
+
 - "All my tests are documented with JSDoc"
 - "I explain the AAA pattern in my test comments"
 - "I document edge cases and why they're tested"
@@ -226,6 +245,7 @@ Point out:
 ## JSDoc Best Practices
 
 ### ✅ DO:
+
 - Explain WHY, not just WHAT
 - Document edge cases and their importance
 - Use consistent formatting
@@ -233,6 +253,7 @@ Point out:
 - Update comments when code changes
 
 ### ❌ DON'T:
+
 - State the obvious (`// Set x to 5`)
 - Write novels (keep it concise)
 - Let comments become outdated

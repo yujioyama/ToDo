@@ -1,9 +1,9 @@
 /**
  * @fileoverview Test suite for UI feedback components (toasts and inline validation).
- * 
+ *
  * Tests the toast notification system and inline form validation feedback,
  * including DOM manipulation, timer handling, and event interactions.
- * 
+ *
  * @requires vitest
  * @requires jsdom
  */
@@ -37,7 +37,7 @@ describe("createToastManager", () => {
 
   /**
    * Test: Toast element is created and becomes visible after animation frame.
-   * 
+   *
    * Verifies:
    * - Toast element is added to DOM
    * - Correct variant CSS class is applied
@@ -61,7 +61,7 @@ describe("createToastManager", () => {
 
   /**
    * Test: Toast action button calls handler and dismisses toast.
-   * 
+   *
    * Verifies:
    * - Action button is rendered with correct label
    * - Handler function is called when button is clicked
@@ -103,9 +103,9 @@ describe("createToastManager", () => {
 
   /**
    * Test: Toast automatically dismisses after specified duration.
-   * 
+   *
    * Uses fake timers to simulate time passage without actual waiting.
-   * 
+   *
    * Verifies:
    * - Toast exists initially
    * - After duration, dismiss animation is triggered
@@ -138,7 +138,7 @@ describe("createToastManager", () => {
 
   /**
    * Test: All toast variants (info, success, error) render with correct CSS classes.
-   * 
+   *
    * Ensures visual variants are properly applied for different notification types.
    */
   it("renders toasts with different variants", () => {
@@ -163,7 +163,7 @@ describe("createToastManager", () => {
 
   /**
    * Test: Toast manager gracefully handles invalid layer element.
-   * 
+   *
    * Edge case: Ensures the manager doesn't crash when passed null/invalid element.
    * Returns no-op functions that can be called safely without errors.
    */
@@ -179,7 +179,7 @@ describe("createToastManager", () => {
 
   /**
    * Test: Manual dismiss cancels auto-dismiss timer.
-   * 
+   *
    * Verifies that calling the dismiss function immediately removes the toast
    * and prevents the auto-dismiss timer from firing later.
    */
@@ -207,7 +207,7 @@ describe("createToastManager", () => {
 
   /**
    * Test: Toast renders without action button when no action is provided.
-   * 
+   *
    * Ensures the action button is optional and doesn't render when not needed.
    */
   it("renders toast without action button when action is not provided", () => {
@@ -227,7 +227,7 @@ describe("createToastManager", () => {
 
 /**
  * Test suite for inline validation feedback.
- * 
+ *
  * Tests form input validation messages and error state styling
  * for different container types (input-text, todo-list edit).
  */
@@ -266,7 +266,7 @@ describe("createInlineFeedback", () => {
 
   /**
    * Test: Feedback system handles unknown container types gracefully.
-   * 
+   *
    * Edge case: When input is not inside a recognized container,
    * show/clear operations should not throw errors.
    */
@@ -285,7 +285,7 @@ describe("createInlineFeedback", () => {
 
   /**
    * Test: Feedback works with todo-list edit wrapper containers.
-   * 
+   *
    * Verifies the feedback system supports the inline editing UI pattern
    * used in the todo list, with different CSS classes than standard inputs.
    */
@@ -319,7 +319,7 @@ describe("createInlineFeedback", () => {
 
   /**
    * Test: Multiple errors reuse the same feedback element.
-   * 
+   *
    * Performance optimization: Instead of creating new elements,
    * the feedback system updates the existing message element.
    */
