@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   root: ".", // index.html location
+  base: process.env.NODE_ENV === "production" ? "/ToDo/" : "/",
   server: {
     open: true, // open browser automatically
   },
