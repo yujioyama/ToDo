@@ -1,8 +1,8 @@
 {
-  "name": "todo",
+  "name": "todo-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "A modern, feature-rich todo application built with vanilla JavaScript",
+  "main": "index.html",
   "dependencies": {
     "nanoid": "^5.1.6"
   },
@@ -16,11 +16,13 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:run": "vitest --run",
+    "test:coverage": "vitest --coverage"
   },
-  "keywords": [],
+  "keywords": ["todo", "javascript", "vite", "scss", "localStorage", "spa"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "volta": {
     "node": "24.9.0"
   }

@@ -60,8 +60,7 @@
     border: 1px solid var(--color-border);
     background: var(--color-surface-subtle);
     color: var(--color-text);
-    transition: background 0.2s ease, border-color 0.2s ease,
-      color 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
 
   &__input {
