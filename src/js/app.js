@@ -637,12 +637,20 @@ document.addEventListener("DOMContentLoaded", () => {
         : "Switch to dark mode";
   };
 
+  // Mobile detection for drag and drop
+  const isMobileDevice = () => {
+    return ('ontouchstart' in window) || 
+           (navigator.maxTouchPoints > 0) || 
+           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
   const render = () => {
     /**
      * Render pipeline orchestrates filtering/tag matching/sorting, selection syncing, and metrics refresh.
      */
     pruneSelectedTasks();
-    isDragEnabled = currentSort === "none";
+    // Disable drag on mobile devices since HTML5 drag API doesn't work reliably on touch devices
+    isDragEnabled = currentSort === "none" && !isMobileDevice();
     const visibleTasks = renderTaskList(
       taskTemplate,
       taskListElm,
