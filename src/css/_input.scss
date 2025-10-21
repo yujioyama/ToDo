@@ -8,6 +8,7 @@
 .input-date__input,
 .input-select__select {
   width: 100%;
+  max-width: 100%;
   border: 1px solid var(--color-border);
   background: var(--color-surface-subtle);
   color: var(--color-text);
@@ -15,6 +16,41 @@
   border-radius: var(--radius-sm);
   transition: border-color 0.2s ease, box-shadow 0.2s ease,
     background-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+// Mobile-specific date input fixes
+.input-date__input {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  min-width: 0;
+  
+  // iOS Safari specific fixes
+  @media screen and (-webkit-min-device-pixel-ratio: 2) {
+    font-size: 16px; // Prevents zoom on iOS
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  // Generic mobile fixes
+  @media (max-width: 768px) {
+    font-size: 16px; // Prevents zoom
+    padding: 12px 14px; // Slightly larger touch target
+    max-width: 100%;
+    width: 100%;
+    min-height: 44px; // Apple's recommended touch target
+    
+    // Force date input to respect container width on mobile
+    &::-webkit-datetime-edit {
+      max-width: 100%;
+      overflow: hidden;
+    }
+    
+    &::-webkit-calendar-picker-indicator {
+      opacity: 0.7;
+      cursor: pointer;
+    }
+  }
 }
 
 .input-text__input:focus,
