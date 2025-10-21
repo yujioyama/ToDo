@@ -2,22 +2,24 @@
   color-scheme: light;
   --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  --color-bg: #f5f6fa;
+  
+  // Alpaca Light Theme - Soft, warm colors inspired by alpaca fur
+  --color-bg: #faf8f5;
   --color-surface: #ffffff;
-  --color-surface-subtle: #f1f5f9;
-  --color-border: #e2e8f0;
-  --color-text: #1f2933;
-  --color-text-muted: #64748b;
-  --color-accent: #2563eb;
-  --color-accent-soft: rgba(37, 99, 235, 0.12);
-  --color-success: #16a34a;
-  --color-success-soft: rgba(22, 163, 74, 0.16);
-  --color-danger: #ef4444;
-  --color-danger-soft: rgba(239, 68, 68, 0.18);
-  --shadow-soft: 0 12px 32px rgba(15, 23, 42, 0.08);
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 6px;
+  --color-surface-subtle: #f5f2ed;
+  --color-border: #e8ddd4;
+  --color-text: #3c2e26;
+  --color-text-muted: #8b7355;
+  --color-accent: #d4845c; // Warm alpaca brown
+  --color-accent-soft: rgba(212, 132, 92, 0.12);
+  --color-success: #7ba05b; // Soft grass green
+  --color-success-soft: rgba(123, 160, 91, 0.16);
+  --color-danger: #c67b5c; // Warm terracotta
+  --color-danger-soft: rgba(198, 123, 92, 0.18);
+  --shadow-soft: 0 12px 32px rgba(60, 46, 38, 0.08);
+  --radius-lg: 20px; // More rounded for cute alpaca aesthetic
+  --radius-md: 16px;
+  --radius-sm: 8px;
   --gap-lg: 32px;
   --gap-md: 20px;
   --gap-sm: 12px;
@@ -66,17 +68,18 @@ button {
 
 .theme-dark {
   color-scheme: dark;
-  --color-bg: #0f1419;
-  --color-surface: #1a1f2e;
-  --color-surface-subtle: #252a3a;
-  --color-border: rgba(148, 163, 184, 0.35);
-  --color-text: #f1f3f5;
-  --color-text-muted: #c1c8cd;
-  --color-accent: #60a5fa;
-  --color-accent-soft: rgba(96, 165, 250, 0.2);
-  --color-success: #22c55e;
-  --color-success-soft: rgba(34, 197, 94, 0.2);
-  --color-danger: #f87171;
-  --color-danger-soft: rgba(248, 113, 113, 0.2);
+  // Alpaca Dark Theme - Cozy nighttime alpaca colors
+  --color-bg: #2d241f;
+  --color-surface: #3d3228;
+  --color-surface-subtle: #4a3f34;
+  --color-border: rgba(212, 132, 92, 0.25);
+  --color-text: #f4efe8;
+  --color-text-muted: #c4b59f;
+  --color-accent: #e8a574; // Lighter warm brown for dark mode
+  --color-accent-soft: rgba(232, 165, 116, 0.2);
+  --color-success: #9bc277; // Soft sage green
+  --color-success-soft: rgba(155, 194, 119, 0.2);
+  --color-danger: #d49884; // Warm coral
+  --color-danger-soft: rgba(212, 152, 132, 0.2);
   --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.6);
 }
