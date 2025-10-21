@@ -6,6 +6,8 @@
   max-width: 100%;
   overflow-x: hidden; // Only hide horizontal overflow
   overflow-y: visible; // Allow vertical shadows and borders
+  padding-top: 4px; // Space for hover transform and borders
+  padding-bottom: 4px; // Space for shadows
 
   &__item {
     display: flex;
@@ -13,6 +15,7 @@
     justify-content: space-between;
     gap: var(--gap-sm);
     padding: 18px 22px;
+    margin: 2px 0; // Extra space for borders and hover effects
     border-radius: var(--radius-md);
     border: 2px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-surface-subtle) 0%, var(--color-surface) 100%);
@@ -34,7 +37,7 @@
     }
 
     &:hover {
-      transform: translateY(-2px);
+      transform: translateY(-1px);
       box-shadow: var(--shadow-soft);
       border-color: var(--color-accent);
       background: var(--color-surface);
