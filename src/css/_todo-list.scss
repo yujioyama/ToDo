@@ -57,6 +57,8 @@
     align-items: center;
     gap: var(--gap-sm);
     flex: 1;
+    min-width: 0; // Allows shrinking below content size
+    overflow: hidden; // Prevents content from breaking layout
   }
 
   &__select {
@@ -70,6 +72,9 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    flex: 1;
+    min-width: 0; // Allows flex item to shrink below content size
+    max-width: 100%;
   }
 
   &__status {
@@ -101,6 +106,9 @@
     font-size: 1rem;
     font-weight: 500;
     color: var(--color-text);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   &__due,
@@ -134,23 +142,33 @@
   }
 
   &__editWrap {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+    width: 100%;
+    max-width: 100%;
   }
 
   &__edit {
     border: none;
-    padding: 0;
+    padding: 2px 4px;
     margin: 0;
     font: inherit;
     line-height: inherit;
     background: transparent;
-
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    resize: none; // Prevent manual resizing if it's a textarea
+    
     &:focus {
       outline: none;
       box-shadow: none;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
     }
   }
 

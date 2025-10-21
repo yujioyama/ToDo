@@ -773,7 +773,6 @@ document.addEventListener("DOMContentLoaded", () => {
     inputElm.type = "text";
     inputElm.value = originalText;
     inputElm.className = "todo-list__edit";
-    inputElm.size = Math.max(1, originalText.length);
 
     const wrapperElm = document.createElement("div");
     wrapperElm.className = "todo-list__editWrap";
