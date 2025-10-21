@@ -19,7 +19,8 @@
   flex-direction: column;
   gap: var(--gap-md);
   min-width: 0;
-  overflow: hidden;
+  overflow-x: hidden; // Only hide horizontal overflow
+  overflow-y: visible; // Allow vertical content like borders/shadows
 }
 
 @media (max-width: 960px) {

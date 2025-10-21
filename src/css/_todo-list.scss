@@ -4,7 +4,8 @@
   gap: var(--gap-sm);
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
+  overflow-x: hidden; // Only hide horizontal overflow
+  overflow-y: visible; // Allow vertical shadows and borders
 
   &__item {
     display: flex;
