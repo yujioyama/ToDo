@@ -3,20 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🦙 AlpacaTasks - Fluffy Task Management</title>
+    <meta
+      name="description"
+      content="Todo App is a fast, accessible, mobile‑first task manager built with modern JavaScript, Vite, and SCSS."
+    />
+    <meta name="theme-color" content="#d4845c" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Todo App - Fast Accessible Task Manager"
+    />
+    <meta
+      property="og:description"
+      content="Organize your tasks easily. Fast, accessible, mobile‑first todo app."
+    />
+    <!-- Optional: set to your published URL -->
+    <meta property="og:url" content="https://yujioyama.github.io/ToDo/" />
+    <!-- Optional: social preview image -->
+    <!-- <meta property="og:image" content="/assets/og-image.png" /> -->
+    <!-- Optional: favicon and manifest -->
+    <!-- <link rel="icon" href="/favicon.ico" /> -->
+    <!-- <link rel="manifest" href="/site.webmanifest" /> -->
+    <title>Todo App - Fast Accessible Task Manager</title>
     <script type="module" src="/src/js/main.js"></script>
   </head>
   <body class="theme-light">
     <main class="app">
       <header class="app-header">
         <div class="app-header__brand">
-          <h1 class="app-header__title">🦙 AlpacaTasks</h1>
+          <h1 class="app-header__title">Todo App</h1>
           <p class="app-header__tagline">
-            Keep your tasks organized with fluffy alpaca energy!
+            Organize your tasks quickly and easily.
           </p>
         </div>
         <div class="app-header__toolbar">
-          <button class="toolbar-button toolbar-button--accent js-theme-toggle" type="button">
+          <button
+            class="toolbar-button toolbar-button--accent js-theme-toggle"
+            type="button"
+          >
             Toggle theme
           </button>
         </div>
@@ -35,6 +59,7 @@
                   <input
                     type="text"
                     class="input-text__input js-new-task-input"
+                    aria-label="New task"
                     placeholder="What fluffy task needs attention? 🦙"
                   />
                 </div>
@@ -42,12 +67,14 @@
                   <input
                     type="date"
                     class="input-date__input js-new-task-date"
+                    aria-label="Due date"
                   />
                 </div>
                 <div class="input-select">
                   <select
                     name="priority"
                     class="input-select__select js-new-task-priority"
+                    aria-label="Priority"
                   >
                     <option value="">Priority</option>
                     <option value="high">High</option>
@@ -59,6 +86,7 @@
                   <input
                     type="text"
                     class="input-text__input js-new-task-tags"
+                    aria-label="Tags"
                     placeholder="Tags (comma separated)"
                   />
                 </div>
@@ -83,6 +111,7 @@
                       <input
                         type="text"
                         class="input-text__input js-search"
+                        aria-label="Search tasks"
                         placeholder="Search through your fluffy tasks..."
                       />
                     </div>
@@ -131,7 +160,10 @@
                   <div class="action__title">Sort</div>
                   <div class="action__sort">
                     <div class="input-select">
-                      <select class="input-select__select js-sort">
+                      <select
+                        class="input-select__select js-sort"
+                        aria-label="Sort tasks"
+                      >
                         <option value="none">None</option>
                         <option value="dueDate">Due date</option>
                         <option value="priority">Priority</option>
@@ -146,6 +178,7 @@
                       <input
                         type="text"
                         class="input-text__input js-tag-filter"
+                        aria-label="Filter tags"
                         placeholder="Filter tags (comma separated)"
                       />
                     </div>
@@ -168,9 +201,7 @@
             <article class="metric-card">
               <span class="metric-card__label">Completed</span>
               <span class="metric-card__value js-metric-complete">0</span>
-              <span class="metric-card__helper">
-                Tasks marked as done
-              </span>
+              <span class="metric-card__helper"> Tasks marked as done </span>
             </article>
             <article class="metric-card">
               <span class="metric-card__label">In Progress</span>
@@ -228,6 +259,7 @@
 
       <div
         class="toast-layer js-toast-layer"
+        role="status"
         aria-live="polite"
         aria-atomic="true"
       ></div>
@@ -248,7 +280,10 @@
               <span class="todo-list__text js-task-text"></span>
               <div class="todo-list__meta">
                 <time class="todo-list__due js-task-due" hidden></time>
-                <span class="todo-list__priority js-task-priority" hidden></span>
+                <span
+                  class="todo-list__priority js-task-priority"
+                  hidden
+                ></span>
                 <span class="todo-list__tags js-task-tags" hidden></span>
               </div>
             </div>
