@@ -30,6 +30,7 @@ import {
 } from "./store.js";
 import { addTask, deleteTask, toggleTaskStatus, updateTask } from "./model.js";
 import { createToastManager, createInlineFeedback } from "./ui-feedback.js";
+import { getTranslation } from "./i18n.js";
 
 /**
  * Toggle button state to reflect completion status.
@@ -42,7 +43,9 @@ const applyStatus = (changeStatusButtonElm, isDone) => {
   changeStatusButtonElm.classList.toggle("is-complete", isDone);
   changeStatusButtonElm.setAttribute(
     "aria-label",
-    isDone ? "Mark as incomplete" : "Mark as complete"
+    isDone
+      ? getTranslation("markAsIncomplete") || "Mark as incomplete"
+      : getTranslation("markAsComplete") || "Mark as complete"
   );
   changeStatusButtonElm.setAttribute("aria-pressed", String(isDone));
 };
@@ -98,7 +101,9 @@ const applyTags = (tagsElm, tags) => {
     return;
   }
 
-  tagsElm.textContent = `Tags: ${normalized.join(", ")}`;
+  tagsElm.textContent = `${getTranslation("tags") || "Tags"}: ${normalized.join(
+    ", "
+  )}`;
   tagsElm.hidden = false;
 };
 
@@ -299,7 +304,7 @@ const applyDueDate = (dueElm, dueDate) => {
     return;
   }
 
-  dueElm.textContent = `Due ${formatted.display}`;
+  dueElm.textContent = `${getTranslation("due") || "Due"} ${formatted.display}`;
   dueElm.setAttribute("datetime", formatted.datetime);
   dueElm.hidden = false;
 };
@@ -330,7 +335,9 @@ const applyPriority = (priorityElm, priority) => {
     return;
   }
 
-  priorityElm.textContent = `Priority: ${formatted}`;
+  priorityElm.textContent = `${
+    getTranslation("priority") || "Priority"
+  }: ${formatted}`;
   priorityElm.hidden = false;
 };
 
@@ -633,15 +640,19 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add(currentTheme, "theme-transition");
     themeToggleButtonElm.textContent =
       currentTheme === "theme-dark"
-        ? "Switch to light mode"
-        : "Switch to dark mode";
+        ? getTranslation("switchToLightMode") || "Switch to light mode"
+        : getTranslation("switchToDarkMode") || "Switch to dark mode";
   };
 
   // Mobile detection for drag and drop
   const isMobileDevice = () => {
-    return ('ontouchstart' in window) || 
-           (navigator.maxTouchPoints > 0) || 
-           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return (
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    );
   };
 
   const render = () => {
@@ -672,6 +683,11 @@ document.addEventListener("DOMContentLoaded", () => {
   syncTagFilterControl();
   applyTheme(currentTheme);
   render();
+
+  document.addEventListener("languageChanged", () => {
+    applyTheme(currentTheme);
+    render();
+  });
 
   const clearAndFocusInput = () => {
     newTaskInputElm.value = "";
