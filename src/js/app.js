@@ -622,10 +622,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const completionRate =
       total === 0 ? 0 : Math.round((completed / total) * 100);
 
-    metricTotalElm.textContent = String(total);
-    metricCompleteElm.textContent = String(completed);
-    metricActiveElm.textContent = String(active);
-    metricRateElm.textContent = `${completionRate}%`;
+    metricTotalElm.setAttribute("value", String(total));
+    metricCompleteElm.setAttribute("value", String(completed));
+    metricActiveElm.setAttribute("value", String(active));
+    metricRateElm.setAttribute("value", `${completionRate}%`);
   };
 
   /**
