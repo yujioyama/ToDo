@@ -31,6 +31,7 @@ import {
 import { addTask, deleteTask, toggleTaskStatus, updateTask } from "./model.js";
 import { createToastManager, createInlineFeedback } from "./ui-feedback.js";
 import { getTranslation } from "./i18n.js";
+import "../components/MetricCard.js";
 
 /**
  * Toggle button state to reflect completion status.
@@ -45,7 +46,7 @@ const applyStatus = (changeStatusButtonElm, isDone) => {
     "aria-label",
     isDone
       ? getTranslation("markAsIncomplete") || "Mark as incomplete"
-      : getTranslation("markAsComplete") || "Mark as complete"
+      : getTranslation("markAsComplete") || "Mark as complete",
   );
   changeStatusButtonElm.setAttribute("aria-pressed", String(isDone));
 };
@@ -102,7 +103,7 @@ const applyTags = (tagsElm, tags) => {
   }
 
   tagsElm.textContent = `${getTranslation("tags") || "Tags"}: ${normalized.join(
-    ", "
+    ", ",
   )}`;
   tagsElm.hidden = false;
 };
@@ -122,7 +123,7 @@ const insertTask = (
   task,
   taskListElm,
   selectedTaskIds,
-  dragEnabled = false
+  dragEnabled = false,
 ) => {
   const node = taskTemplate.content.cloneNode(true);
   const listItemElm = node.querySelector(".js-todo-list-item");
@@ -219,7 +220,7 @@ const matchesTagFilter = (task, filterTags) => {
 
   const taskTagSet = new Set(taskTags);
   return filterTags.every((filterTag) =>
-    taskTagSet.has(filterTag.toLowerCase())
+    taskTagSet.has(filterTag.toLowerCase()),
   );
 };
 
@@ -364,15 +365,15 @@ const renderTaskList = (
   sort,
   tagFilter,
   selectedTaskIds,
-  dragEnabled
+  dragEnabled,
 ) => {
   taskListElm.innerHTML = "";
   const filteredTasks = getFilteredTasks(tasks, filter);
   const searchedTasks = filteredTasks.filter((task) =>
-    matchesSearch(task, searchTerm)
+    matchesSearch(task, searchTerm),
   );
   const tagFilteredTasks = searchedTasks.filter((task) =>
-    matchesTagFilter(task, tagFilter)
+    matchesTagFilter(task, tagFilter),
   );
   const visibleTasks = getSortedTasks(tagFilteredTasks, sort);
   for (const task of visibleTasks)
@@ -385,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
    * Guard that all required DOM elements exist before continuing.
    */
   const addNewTaskButtonElm = document.querySelector(
-    ".js-add-new-task-trigger"
+    ".js-add-new-task-trigger",
   );
   const newTaskInputElm = document.querySelector(".js-new-task-input");
   const newTaskDateElm = document.querySelector(".js-new-task-date");
@@ -433,18 +434,18 @@ document.addEventListener("DOMContentLoaded", () => {
     tags: normalizeTags(task.tags),
   }));
   const initialFilterInput = filterListElm.querySelector(
-    'input[name="filter"]:checked'
+    'input[name="filter"]:checked',
   );
   const availableFilterInputs = Array.from(
-    filterListElm.querySelectorAll(".js-filter-trigger")
+    filterListElm.querySelectorAll(".js-filter-trigger"),
   );
   const savedFilter = loadFilter();
   const availableValues = new Set(
-    availableFilterInputs.map((input) => input.value)
+    availableFilterInputs.map((input) => input.value),
   );
   let currentFilter = availableValues.has(savedFilter)
     ? savedFilter
-    : initialFilterInput?.value ?? "all";
+    : (initialFilterInput?.value ?? "all");
   const savedSort = loadSort();
   const availableSortValues = new Set(["none", "dueDate", "priority"]);
   let currentSort = availableSortValues.has(savedSort) ? savedSort : "none";
@@ -527,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const syncFilterControls = () => {
     const targetInput = filterListElm.querySelector(
-      `.js-filter-trigger[value="${currentFilter}"]`
+      `.js-filter-trigger[value="${currentFilter}"]`,
     );
     if (targetInput) targetInput.checked = true;
   };
@@ -650,7 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "ontouchstart" in window ||
       navigator.maxTouchPoints > 0 ||
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
+        navigator.userAgent,
       )
     );
   };
@@ -671,7 +672,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentSort,
       currentTagFilter,
       selectedTaskIds,
-      isDragEnabled
+      isDragEnabled,
     );
     visibleTaskIds = visibleTasks.map((task) => task.id);
     updateBulkActionControls();
@@ -715,7 +716,7 @@ document.addEventListener("DOMContentLoaded", () => {
       newTaskText,
       newTaskDueDate,
       newTaskPriority,
-      newTaskTags
+      newTaskTags,
     );
     saveTasks(tasks);
     clearAndFocusInput();

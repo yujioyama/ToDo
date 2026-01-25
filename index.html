@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -222,42 +222,30 @@
 
         <section class="app-shell__content">
           <section class="metrics" aria-label="Task overview">
-            <article class="metric-card">
-              <span class="metric-card__label" id="metric-label-total"
-                >Total Tasks</span
-              >
-              <span class="metric-card__value js-metric-total">0</span>
-              <span class="metric-card__helper" id="metric-helper-total">
-                All items across your lists
-              </span>
-            </article>
-            <article class="metric-card">
-              <span class="metric-card__label" id="metric-label-completed"
-                >Completed</span
-              >
-              <span class="metric-card__value js-metric-complete">0</span>
-              <span class="metric-card__helper" id="metric-helper-completed">
-                Tasks marked as done
-              </span>
-            </article>
-            <article class="metric-card">
-              <span class="metric-card__label" id="metric-label-inprogress"
-                >In Progress</span
-              >
-              <span class="metric-card__value js-metric-active">0</span>
-              <span class="metric-card__helper" id="metric-helper-inprogress">
-                Tasks still waiting for attention
-              </span>
-            </article>
-            <article class="metric-card">
-              <span class="metric-card__label" id="metric-label-completion"
-                >Completion</span
-              >
-              <span class="metric-card__value js-metric-rate">0%</span>
-              <span class="metric-card__helper" id="metric-helper-completion">
-                Share of tasks completed
-              </span>
-            </article>
+            <metric-card
+              label="Total Tasks"
+              value="0"
+              helper="All items across your lists"
+              class="js-metric-total"
+            ></metric-card>
+            <metric-card
+              label="Completed"
+              value="0"
+              helper="Tasks marked as done"
+              class="js-metric-complete"
+            ></metric-card>
+            <metric-card
+              label="In Progress"
+              value="0"
+              helper="Tasks still waiting for attention"
+              class="js-metric-active"
+            ></metric-card>
+            <metric-card
+              label="Completion"
+              value="0%"
+              helper="Share of tasks completed"
+              class="js-metric-rate"
+            ></metric-card>
           </section>
 
           <section class="panel panel--list">
