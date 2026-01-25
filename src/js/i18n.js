@@ -3,6 +3,9 @@
 
 let currentLang = "en";
 let translations = {};
+function getCurrentLanguage() {
+  return currentLang;
+}
 
 async function loadLocale(lang) {
   const localeUrl = new URL(`./locales/${lang}.json`, import.meta.url);
@@ -22,9 +25,9 @@ function getTranslation(key) {
 function setLanguage(lang) {
   return loadLocale(lang).then(() => {
     document.dispatchEvent(
-      new CustomEvent("languageChanged", { detail: lang })
+      new CustomEvent("languageChanged", { detail: lang }),
     );
   });
 }
 
-export { getTranslation, setLanguage, loadLocale, currentLang };
+export { getTranslation, setLanguage, loadLocale, getCurrentLanguage };

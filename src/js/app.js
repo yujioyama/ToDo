@@ -30,7 +30,7 @@ import {
 } from "./store.js";
 import { addTask, deleteTask, toggleTaskStatus, updateTask } from "./model.js";
 import { createToastManager, createInlineFeedback } from "./ui-feedback.js";
-import { getTranslation } from "./i18n.js";
+import { getTranslation, getCurrentLanguage, loadLocale } from "./i18n.js";
 import "../components/MetricCard.js";
 
 /**
@@ -279,12 +279,25 @@ const formatDueDate = (dueDate) => {
   const parsedDate = new Date(dueDate);
   if (Number.isNaN(parsedDate.getTime())) return null;
 
-  return {
-    display: parsedDate.toLocaleDateString(undefined, {
+  const lang = getCurrentLanguage ? getCurrentLanguage() : "en";
+  let display;
+  if (lang === "ja" || lang === "ja-JP") {
+    // Japanese: 2026年1月25日
+    display = parsedDate.toLocaleDateString("ja-JP", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } else {
+    // English: Jan 25, 2026
+    display = parsedDate.toLocaleDateString(undefined, {
       year: "numeric",
       month: "short",
       day: "numeric",
-    }),
+    });
+  }
+  return {
+    display,
     datetime: dueDate,
   };
 };
@@ -305,7 +318,7 @@ const applyDueDate = (dueElm, dueDate) => {
     return;
   }
 
-  dueElm.textContent = `${getTranslation("due") || "Due"} ${formatted.display}`;
+  dueElm.textContent = `${getTranslation("due") || "Due"}: ${formatted.display}`;
   dueElm.setAttribute("datetime", formatted.datetime);
   dueElm.hidden = false;
 };
@@ -318,7 +331,10 @@ const applyDueDate = (dueElm, dueDate) => {
  */
 const formatPriorityLabel = (priority) => {
   if (!priority) return null;
-  return priority.charAt(0).toUpperCase() + priority.slice(1);
+  const translatedPriority = getTranslation(priority.toLowerCase());
+  return (
+    translatedPriority.charAt(0).toUpperCase() + translatedPriority.slice(1)
+  );
 };
 
 /**
@@ -381,7 +397,15 @@ const renderTaskList = (
   return visibleTasks;
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const defaultLang =
+    navigator.language && navigator.language.startsWith("ja") ? "ja" : "en";
+  try {
+    await loadLocale(defaultLang);
+  } catch (e) {
+    console.error("Failed to load locale:", e);
+  }
+
   /**
    * Guard that all required DOM elements exist before continuing.
    */
