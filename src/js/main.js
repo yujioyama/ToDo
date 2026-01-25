@@ -71,7 +71,7 @@ function updateStaticTexts() {
   const newTaskPriority = document.getElementById("new-task-priority");
   if (newTaskPriority instanceof HTMLSelectElement) {
     const [priorityOpt, highOpt, mediumOpt, lowOpt] = Array.from(
-      newTaskPriority.options
+      newTaskPriority.options,
     );
     if (priorityOpt) priorityOpt.textContent = getTranslation("priority");
     if (highOpt) highOpt.textContent = getTranslation("high");
@@ -90,7 +90,7 @@ loadLocale(userLang).then(updateStaticTexts);
 if (langSwitch) {
   langSwitch.value = userLang;
   langSwitch.addEventListener("change", (e) => {
-    setLanguage(e.target.value).then(updateStaticTexts);
+    setLanguage(e.target.value);
   });
 }
 
