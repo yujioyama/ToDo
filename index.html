@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -308,7 +308,34 @@
       ></div>
 
       <template id="list-item-template">
-        <todo-item></todo-item>
+        <li class="todo-list__item js-todo-list-item" data-id>
+          <div class="todo-list__left">
+            <input
+              class="todo-list__select js-task-select"
+              type="checkbox"
+              aria-label="Select task"
+            />
+            <button
+              class="todo-list__status js-task-status-trigger"
+              aria-label="Mark as complete"
+            ></button>
+            <div class="todo-list__content">
+              <span class="todo-list__text js-task-text"></span>
+              <div class="todo-list__meta">
+                <time class="todo-list__due js-task-due" hidden></time>
+                <span
+                  class="todo-list__priority js-task-priority"
+                  hidden
+                ></span>
+                <span class="todo-list__tags js-task-tags" hidden></span>
+              </div>
+            </div>
+          </div>
+
+          <button class="todo-list__delete js-delete-task-trigger">
+            Delete
+          </button>
+        </li>
       </template>
     </main>
   </body>
